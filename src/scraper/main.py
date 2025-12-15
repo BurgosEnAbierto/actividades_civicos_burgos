@@ -3,6 +3,10 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 import json
 import re
+import hashlib
+from pathlib import PosixPath
+from datetime import datetime
+from utils.parse_pdf_content import parse_activities, process_pdf
 
 
 BASE_URL = "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
@@ -74,6 +78,9 @@ def extract_pdf_links(html: str) -> list:
             if not pdf_pattern.search(href):
                 continue
 
+            # TODO: descargamos solo el PDF de Gamonal Norte por ahora. ProcessPDF and ParseActivities no están preparados para el resto, organizados diferentemente
+            if "GAMONAL_NORTE" not in title.upper().replace(" ", "_"):
+                continue
 
             full_url = f"https://www.aytoburgos.es{href}" if href.startswith("/") else href
 
@@ -92,17 +99,82 @@ def save_links(links: list):
     print(f"Guardado en {OUTPUT_FILE}")
 
 
+def download_pdf(url: str, output_folder: Path) -> Path:
+    output_folder.mkdir(parents=True, exist_ok=True)
+    filename = url.split("/")[-1].split("?")[0] or "document.pdf"
+    pdf_path = output_folder / filename
+
+    print(f" → Descargando PDF: {filename}")
+    r = requests.get(url, headers=HEADERS)
+    r.raise_for_status()
+    pdf_path.write_bytes(r.content)
+    return pdf_path
+
+def compute_file_hash(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
 def main():
     html = fetch_page(BASE_URL)
     links = extract_pdf_links(html)
-
 
     print("\nPDFs encontrados:")
     for item in links:
         print(f" - {item['title']} → {item['url']}")
 
-
+    # Guardamos URLs
     save_links(links)
+
+    pdf_output_folder = Path("data/pdfs")
+    metadata_output = Path("data/pdf_data.json")
+
+    pdf_metadata = {}
+
+    for item in links:
+        url = item["url"]
+
+        # Descargar
+        pdf_path = download_pdf(url, pdf_output_folder)
+
+        # Hash + tamaño
+        file_hash = compute_file_hash(pdf_path)
+        size = pdf_path.stat().st_size
+        timestamp = datetime.utcnow().isoformat()
+
+        pdf_metadata[pdf_path.name] = {
+            "title": item["title"],
+            "url": url,
+            "path": str(pdf_path),
+            "hash": file_hash,
+            "size_bytes": size,
+            "downloaded_at": timestamp,
+        }
+
+    with metadata_output.open("w", encoding="utf-8") as f:
+        json.dump(pdf_metadata, f, indent=2, ensure_ascii=False)
+
+    print(f"\nMetadatos guardados en: {metadata_output}")
+
+    # Parsear PDFs y extraer actividades
+    metadata_output = Path("data/pdf_data.json")
+    with metadata_output.open("w", encoding="utf-8") as f:
+        json.dump(pdf_metadata, f, indent=2, ensure_ascii=False)
+
+    all_activities = {}
+    for pdf_name, meta in pdf_metadata.items():
+        # Procesar PDF → texto
+        parsed_text = process_pdf(PosixPath(meta["path"]))
+        acts = parse_activities(parsed_text)
+        all_activities[pdf_name] = acts
+
+    activities_out = Path("data/activities.json")
+    with activities_out.open("w", encoding="utf-8") as f:
+        json.dump(all_activities, f, indent=2, ensure_ascii=False)
+
+    print(f"Actividades procesadas → {activities_out}")
 
 
 if __name__ == "__main__":
