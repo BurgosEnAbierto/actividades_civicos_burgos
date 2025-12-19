@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agenda de actividades - Centros Cívicos de Burgos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header img {
+      height: 48px;
+    }
+    header h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+    .container {
+      padding: 16px;
+    }
+    .filters {
+      background: #ffffff;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      border: 1px solid #ddd;
+    }
+    .filters label {
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    .activities {
+      background: #ffffff;
+      border: 1px solid #ddd;
+    }
+    .activity {
+      padding: 12px 16px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    .activity:last-child {
+      border-bottom: none;
+    }
+    .activity:hover {
+      background: #f0f8ff;
+    }
+    .activity-summary {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .activity-detail {
+      margin-top: 8px;
+      font-size: 14px;
+      background: #fafafa;
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo" />
+    <h1>Agenda de actividades - Centros Cívicos de Burgos</h1>
+  </header>
+
+  <div class="container">
+    <div class="filters">
+      <label>
+        Centro cívico
+        <select id="filterCentro">
+          <option value="">Todos</option>
+        </select>
+      </label>
+
+      <label>
+        Fecha
+        <input type="date" id="filterFecha" />
+      </label>
+
+      <label>
+        Requiere inscripción
+        <select id="filterInscripcion">
+          <option value="">Todos</option>
+          <option value="true">Sí</option>
+          <option value="false">No</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="activities" class="activities"></div>
+  </div>
+
+  <script>
+    const DATA_URL = '../data/actividades/actividades_202512.json';
+
+    let allActivities = [];
+
+    function parseDate(str) {
+      const [d, m, y] = str.split('/').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function loadData() {
+      fetch(DATA_URL)
+        .then(res => res.json())
+        .then(data => {
+          allActivities = [];
+          for (const centro in data) {
+            data[centro].forEach(act => {
+              allActivities.push({ ...act, centro });
+            });
+          }
+          initFilters();
+          applyFilters();
+        })
+        .catch(err => {
+          document.getElementById('activities').innerText = 'Error cargando datos';
+          console.error(err);
+        });
+    }
+
+    function initFilters() {
+      const centros = [...new Set(allActivities.map(a => a.centro))];
+      const selectCentro = document.getElementById('filterCentro');
+      centros.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        selectCentro.appendChild(opt);
+      });
+
+      const today = new Date();
+      document.getElementById('filterFecha').value = today.toISOString().split('T')[0];
+
+      document.getElementById('filterCentro').addEventListener('change', applyFilters);
+      document.getElementById('filterFecha').addEventListener('change', applyFilters);
+      document.getElementById('filterInscripcion').addEventListener('change', applyFilters);
+    }
+
+    function applyFilters() {
+      const centro = document.getElementById('filterCentro').value;
+      const fechaValue = document.getElementById('filterFecha').value;
+      const requiere = document.getElementById('filterInscripcion').value;
+
+      let filtered = allActivities.slice();
+
+      if (centro) {
+        filtered = filtered.filter(a => a.centro === centro);
+      }
+
+      if (fechaValue) {
+        // Normalizamos todas las fechas a medianoche local
+        const [y, m, d] = fechaValue.split('-').map(Number);
+        const selectedDate = new Date(y, m - 1, d);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        filtered = filtered.filter(a => {
+          const inicio = parseDate(a.fecha);
+          inicio.setHours(0, 0, 0, 0);
+
+          const fin = a.fecha_fin ? parseDate(a.fecha_fin) : inicio;
+          fin.setHours(0, 0, 0, 0);
+
+          return selectedDate >= inicio && selectedDate <= fin;
+        });
+      }
+
+      if (requiere) {
+        const val = requiere === 'true';
+        filtered = filtered.filter(a => a.requiere_inscripcion === val);
+      }
+
+      renderActivities(filtered);
+    }
+
+    function renderActivities(activities) {
+      const container = document.getElementById('activities');
+      container.innerHTML = '';
+
+      if (activities.length === 0) {
+        container.innerHTML = '<div class="activity">No hay actividades</div>';
+        return;
+      }
+
+      activities.forEach(act => {
+        const div = document.createElement('div');
+        div.className = 'activity';
+
+        const summary = document.createElement('div');
+        summary.className = 'activity-summary';
+        summary.innerHTML = `
+          <div><strong>${act.nombre}</strong></div>
+          <div>${act.fecha}</div>
+          <div>${act.centro}</div>
+          <div>${act.requiere_inscripcion ? 'Sí' : 'No'}</div>
+          <div>${act.publico || ''}</div>
+        `;
+
+        const detail = document.createElement('div');
+        detail.className = 'activity-detail hidden';
+        detail.innerHTML = Object.entries(act)
+          .filter(([k, v]) => v !== null && k !== 'warnings')
+          .map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`)
+          .join('');
+
+        div.appendChild(summary);
+        div.appendChild(detail);
+
+        div.addEventListener('click', () => {
+          detail.classList.toggle('hidden');
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
