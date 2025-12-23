@@ -133,6 +133,8 @@ def normalize_hour(h):
 def parse_activity(activity_text, day_name, day_num, default_year, default_month):
     warnings = []
 
+    text = activity_text.strip()
+
     # --- Fecha base ---
     try:
         dt = datetime(default_year, default_month, day_num)
@@ -142,8 +144,6 @@ def parse_activity(activity_text, day_name, day_num, default_year, default_month
 
     fecha = dt.strftime("%d/%m/%Y")
     fecha_fin = None
-
-    text = activity_text.strip()
 
     # --- Inscripción ---
     requiere = text.startswith("(*)")
@@ -155,7 +155,6 @@ def parse_activity(activity_text, day_name, day_num, default_year, default_month
     if mdate:
         d1, d2, month_name = mdate.groups()
         month_name = month_name.upper()
-
         if month_name in MONTHS:
             try:
                 fecha_fin = datetime(
@@ -163,44 +162,61 @@ def parse_activity(activity_text, day_name, day_num, default_year, default_month
                 ).strftime("%d/%m/%Y")
             except ValueError:
                 warnings.append(f"WARNING: fecha_fin inválida: {text}")
-        else:
-            warnings.append(f"WARNING: mes desconocido: {month_name}")
 
     # --- Horas ---
     hora = hora_fin = None
+    hora_match = None
     name_end = None
 
-    # rango con o sin h → 11:30-13 / 11-13 / 11:30-13:45
+    # eliminar rangos de fechas antes de buscar horas
+    text_for_hours = text
+    if mdate:
+        text_for_hours = (
+            text[: mdate.start()] + text[mdate.end():]
+        )
+
+    # rango horario REAL: requiere ':' o '.' o 'h'
     mrange = re.search(
         r"(\d{1,2}(?:[:.]\d{2})?)\s*-\s*(\d{1,2}(?:[:.]\d{2})?)\s*h?",
-        text,
+        text_for_hours,
         re.IGNORECASE,
     )
 
-    if mrange:
-        h1, h2 = mrange.group(1), mrange.group(2)
-        hora = normalize_hour(h1)
-        hora_fin = normalize_hour(h2)
+    if mrange and (
+        ":" in mrange.group(1)
+        or ":" in mrange.group(2)
+        or "." in mrange.group(1)
+        or "." in mrange.group(2)
+        or "h" in mrange.group(0).lower()
+    ):
+        hora = normalize_hour(mrange.group(1))
+        hora_fin = normalize_hour(mrange.group(2))
+        hora_match = mrange
         name_end = mrange.start()
     else:
         msingle = re.search(
-            r"(\d{1,2}(?:[:.]\d{2})?)\s*h?",
-            text,
+            r"(\d{1,2}(?:[:.]\d{2})?)\s*h",
+            text_for_hours,
             re.IGNORECASE,
         )
         if msingle:
             hora = normalize_hour(msingle.group(1))
             hora_fin = None
+            hora_match = msingle
             name_end = msingle.start()
         elif not mdate:
             warnings.append(f"WARNING: sin hora: {activity_text}")
 
     # --- Nombre ---
-    nombre = (
-        text[:name_end].strip().rstrip(".")
-        if name_end is not None
-        else text
-    )
+    # Nota: si hay rango de fechas y no hay hora, el nombre acaba antes del rango de fechas
+    if name_end is not None:
+        nombre = text[:name_end]
+    elif mdate:
+        nombre = text[: mdate.start()]
+    else:
+        nombre = text
+
+    nombre = nombre.strip().rstrip(".")
 
     # --- Público ---
     publico = None
@@ -208,7 +224,6 @@ def parse_activity(activity_text, day_name, day_num, default_year, default_month
     if mpub:
         publico = mpub.group(1).strip()
     else:
-        # último ":" como fallback
         if ":" in text:
             publico = text.split(":")[-1].strip()
 
@@ -217,22 +232,25 @@ def parse_activity(activity_text, day_name, day_num, default_year, default_month
 
     # --- Lugar ---
     lugar = None
-    if hora:
-        try:
-            start = text.find(hora) + len(hora)
-            fragment = text[start:]
 
-            if mpub:
-                fragment = fragment[: mpub.start() - start]
+    if hora_match:
+        fragment = text[hora_match.end():]
+    elif mdate and "Horario de" in text:
+        fragment = text.split("Horario de", 1)[1]
+    else:
+        fragment = None
 
-            # usar último ":" si existe
-            if ":" in fragment:
-                fragment = fragment.rsplit(":", 1)[0]
+    if fragment:
+        if mpub:
+            fragment = fragment[: mpub.start() - (len(text) - len(fragment))]
 
-            lugar = fragment.strip(" .:")
+        if ":" in fragment:
+            fragment = fragment.rsplit(":", 1)[0]
 
-        except Exception:
-            warnings.append(f"WARNING: lugar no detectado en: {activity_text}")
+        lugar = fragment.strip(" .:")
+
+    if not lugar:
+        warnings.append(f"WARNING: lugar no detectado en: {activity_text}")
 
     return {
         "fecha": fecha,
