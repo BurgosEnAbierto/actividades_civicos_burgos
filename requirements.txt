@@ -2,3 +2,4 @@ requests
 beautifulsoup4
 numpy
 camelot-py
+jsonschema>=4.21.0
