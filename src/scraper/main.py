@@ -1,11 +1,14 @@
 from pathlib import Path
 from datetime import datetime, timezone
 import json
+import logging
 
 from src.scraper.fetch_page import fetch_page
 from src.scraper.parse_links import extract_pdf_links
 from src.utils.detect_month import detect_month
 from src.scraper.compare_links import mark_new_links
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
 DATA_DIR = Path("data")
@@ -60,4 +63,4 @@ def run_scraper() -> dict:
 
 if __name__ == "__main__":
     result = run_scraper()
-    print(result)
+    logger.info("Resultado: %s", result)

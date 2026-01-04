@@ -49,13 +49,21 @@ burgos-civicos/
 │   │   ├── parse_links.py
 │   │   └── main.py
 │   │
-│   ├── downloader_parser/ # Descarga y procesamiento de PDFs
-│   │   ├── download_pdfs.py
-│   │   ├── extract_raw.py
-│   │   ├── parse_activities.py
-│   │   └── main.py
-│   │
-│   └── utils/ # Funciones comunes (hash, fechas, schemas…)
+├── downloader/
+│   ├── __init__.py
+│   └── download_pdf.py
+│
+├── parser/
+│   ├── __init__.py
+│   ├── registry.py
+│   └── <civico>/
+│       ├── __init__.py
+│       ├── extract_raw.py
+│       ├── parse_raw.py
+│       ├── process_pdf.py
+│       └── parse_activities.py
+|
+├── utils/ # Funciones comunes (hash, fechas, schemas…)
 │   └── common.py
 │
 ├── data/
