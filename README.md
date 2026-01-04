@@ -109,15 +109,25 @@ URL pública del Ayuntamiento con la agenda de centros cívicos.
 
 ```json
 {
-  "year": 2025,
-  "month": 12,
-  "generated_at": "2025-11-30T09:15:00Z",
-  "pdfs": [
+  "meta": {
+    "month": "202601",
+    "scraped_at": "2025-12-29T11:30:00Z",
+    "source": "https://www.aytoburgos.es/..."
+  },
+  "links": [
     {
       "civico_id": "gamonal_norte",
-      "title": "GAMONAL NORTE AGENDA DICIEMBRE 2025",
-      "url": "https://www.aytoburgos.es/documents/...pdf",
-      "hash": "sha256:..."
+      "title": "Gamonal Norte – Agenda Enero 2026",
+      "url": "...",
+      "filename": "...pdf",
+      "is_new": true
+    },
+    {
+      "civico_id": "capiscol",
+      "title": "Capiscol – Agenda Enero 2026",
+      "url": "...",
+      "filename": "...pdf",
+      "is_new": false
     }
   ]
 }
