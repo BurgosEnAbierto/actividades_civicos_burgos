@@ -2,6 +2,8 @@ import re
 import logging
 from datetime import datetime
 
+from src.utils.warning_logger import get_warning_logger
+
 logger = logging.getLogger(__name__)
 
 MONTHS = {
@@ -17,6 +19,15 @@ RE_DATE_RANGE = re.compile(
     re.IGNORECASE
 )
 
+RE_AGE_RANGE = re.compile(
+    r"(\d{1,2})\s*(?:a|hasta)\s*(\d{1,2})\s*años",
+    re.IGNORECASE
+)
+
+RE_AGE_MIN = re.compile(
+    r"(?:desde|a partir de)\s*(\d{1,2})\s*años",
+    re.IGNORECASE
+)
 
 def starts_new_activity(line: str) -> bool:
     l = line.strip()
@@ -66,16 +77,23 @@ def normalize_hour(h: str) -> str:
         h = f"{h}:00"
     return h
 
+def parse_activity(
+    *,
+    activity_text: str,
+    day_num: int,
+    default_year: int,
+    default_month: int,
+):
 
-def parse_activity(activity_text, *, day_num, default_year, default_month):
-    warnings = []
     text = activity_text.strip()
+
+    warning_logger = get_warning_logger(default_month)
 
     # Fecha base
     try:
         fecha_dt = datetime(default_year, default_month, day_num)
     except ValueError:
-        logger.warning("Fecha inválida: día=%s mes=%s", day_num, default_month)
+        warning_logger.warning("Fecha inválida: día=%s mes=%s", day_num, default_month)
         return None
 
     fecha = fecha_dt.strftime("%d/%m/%Y")
@@ -114,7 +132,7 @@ def parse_activity(activity_text, *, day_num, default_year, default_month):
             hora = normalize_hour(msingle.group(1))
             text = text.replace(msingle.group(0), "").strip()
         else:
-            warnings.append("sin hora")
+            warning_logger.warning("Sin hora: %s", activity_text)
 
     # Público
     publico = None
@@ -126,7 +144,20 @@ def parse_activity(activity_text, *, day_num, default_year, default_month):
         publico = text.split(":")[-1].strip()
 
     if not publico:
-        warnings.append("sin público")
+        warning_logger.warning("Sin público: %s", activity_text)
+
+    # Edad
+    edad_min = None
+    edad_max = None
+
+    mage = RE_AGE_RANGE.search(activity_text)
+    if mage:
+        edad_min = int(mage.group(1))
+        edad_max = int(mage.group(2))
+    else:
+        mmin = RE_AGE_MIN.search(activity_text)
+        if mmin:
+            edad_min = int(mmin.group(1))
 
     # Lugar
     lugar = None
@@ -141,22 +172,23 @@ def parse_activity(activity_text, *, day_num, default_year, default_month):
         nombre = text
 
     if not lugar:
-        warnings.append("lugar no detectado")
-
-    for w in warnings:
-        logger.warning("%s → %s", w, activity_text)
+        warning_logger.warning("Lugar no detectado (%s)", activity_text)
 
     return {
         "fecha": fecha,
         "fecha_fin": fecha_fin,
         "requiere_inscripcion": requiere,
         "nombre": nombre.rstrip("."),
+        "descripcion": None,
         "hora": hora,
         "hora_fin": hora_fin,
         "lugar": lugar,
         "publico": publico,
-        "warnings": warnings,
+        "edad_min": edad_min,
+        "edad_max": edad_max,
+        "precio": None,
     }
+
 
 
 def sort_key(a):
@@ -185,9 +217,11 @@ def parse_activities_gamonal(raw_rows, *, month):
     default_year = int(month[:4])
     default_month = int(month[4:])
 
+    warning_logger = get_warning_logger(month)
+
     for row in raw_rows:
         if len(row) < 2:
-            logger.warning("Fila inválida: %s", row)
+            warning_logger.warning("Fila inválida: %s", row)
             continue
 
         day_cell = row[0].replace("\n", "").strip()
@@ -197,7 +231,7 @@ def parse_activities_gamonal(raw_rows, *, month):
             _, day_num = day_cell.split()
             day_num = int(day_num)
         except Exception:
-            logger.warning("No se pudo parsear día: %s", day_cell)
+            warning_logger.warning("No se pudo parsear día: %s", day_cell)
             continue
 
         blocks = split_cell_into_activities(text_cell)
@@ -207,7 +241,7 @@ def parse_activities_gamonal(raw_rows, *, month):
 
         for block in blocks:
             act = parse_activity(
-                block,
+                activity_text=block,
                 day_num=day_num,
                 default_year=default_year,
                 default_month=default_month,
