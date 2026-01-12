@@ -2,100 +2,263 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agenda de actividades - Centros Cívicos de Burgos</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       margin: 0;
       padding: 0;
       background: #f5f5f5;
+      color: #333;
     }
+
     header {
       background: #ffffff;
-      border-bottom: 1px solid #ddd;
-      padding: 16px;
+      border-bottom: 2px solid #0066cc;
+      padding: 16px 24px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
     header img {
-      height: 48px;
+      height: 50px;
+      width: auto;
     }
+
     header h1 {
-      font-size: 22px;
+      font-size: 28px;
       margin: 0;
+      color: #0066cc;
     }
+
     .container {
-      padding: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px;
     }
+
+    .month-selector {
+      background: #ffffff;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .month-selector label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .month-selector select {
+      padding: 8px 12px;
+      border: 1px solid #999;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
     .filters {
       background: #ffffff;
       padding: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
       border: 1px solid #ddd;
+      border-radius: 4px;
     }
+
     .filters label {
-      font-size: 14px;
+      font-size: 13px;
       display: flex;
       flex-direction: column;
+      gap: 4px;
+      font-weight: 500;
     }
+
+    .filters input,
+    .filters select {
+      padding: 8px;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
     .activities {
       background: #ffffff;
       border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
     .activity {
-      padding: 12px 16px;
+      padding: 16px;
       border-bottom: 1px solid #eee;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
+
     .activity:last-child {
       border-bottom: none;
     }
+
     .activity:hover {
       background: #f0f8ff;
     }
+
     .activity-summary {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 2fr 1fr 1.5fr 1fr;
+      gap: 12px;
+      align-items: center;
       font-size: 14px;
     }
+
+    .activity-summary-title {
+      font-weight: 600;
+      color: #0066cc;
+    }
+
+    .activity-summary-date {
+      color: #666;
+      font-size: 13px;
+    }
+
+    .activity-summary-centro {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .activity-summary-inscription {
+      text-align: center;
+      font-size: 13px;
+      padding: 4px 8px;
+      background: #f0f0f0;
+      border-radius: 3px;
+    }
+
     .activity-detail {
-      margin-top: 8px;
-      font-size: 14px;
+      margin-top: 12px;
+      padding: 12px;
       background: #fafafa;
-      padding: 8px;
-      border: 1px solid #ddd;
+      border-left: 3px solid #0066cc;
+      font-size: 13px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
     }
+
+    .activity-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .activity-detail-label {
+      font-weight: 600;
+      color: #555;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .activity-detail-value {
+      color: #333;
+      word-break: break-word;
+    }
+
     .hidden {
       display: none;
+    }
+
+    .no-activities {
+      padding: 32px 16px;
+      text-align: center;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .expand-icon {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .activity.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      .activity-summary {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .activity-detail {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Logo" />
+    <img src="logo.png" alt="Logo Burgos" />
     <h1>Agenda de actividades - Centros Cívicos de Burgos</h1>
   </header>
 
   <div class="container">
+    <div class="month-selector">
+      <label for="monthSelect">Selecciona mes:</label>
+      <select id="monthSelect">
+        <option value="">Cargando...</option>
+      </select>
+    </div>
+
     <div class="filters">
-      <label>
+      <label for="filterCentro">
         Centro cívico
         <select id="filterCentro">
           <option value="">Todos</option>
         </select>
       </label>
 
-      <label>
+      <label for="filterFecha">
         Fecha
         <input type="date" id="filterFecha" />
       </label>
 
-      <label>
+      <label for="filterPublico">
+        Público
+        <input type="text" id="filterPublico" placeholder="ej: niños, adultos..." />
+      </label>
+
+      <label for="filterInscripcion">
         Requiere inscripción
         <select id="filterInscripcion">
           <option value="">Todos</option>
@@ -108,131 +271,7 @@
     <div id="activities" class="activities"></div>
   </div>
 
-  <script>
-    const DATA_URL = '../data/actividades/actividades_202512.json';
-
-    let allActivities = [];
-
-    function parseDate(str) {
-      const [d, m, y] = str.split('/').map(Number);
-      return new Date(y, m - 1, d);
-    }
-
-    function loadData() {
-      fetch(DATA_URL)
-        .then(res => res.json())
-        .then(data => {
-          allActivities = [];
-          for (const centro in data) {
-            data[centro].forEach(act => {
-              allActivities.push({ ...act, centro });
-            });
-          }
-          initFilters();
-          applyFilters();
-        })
-        .catch(err => {
-          document.getElementById('activities').innerText = 'Error cargando datos';
-          console.error(err);
-        });
-    }
-
-    function initFilters() {
-      const centros = [...new Set(allActivities.map(a => a.centro))];
-      const selectCentro = document.getElementById('filterCentro');
-      centros.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = c;
-        selectCentro.appendChild(opt);
-      });
-
-      const today = new Date();
-      document.getElementById('filterFecha').value = today.toISOString().split('T')[0];
-
-      document.getElementById('filterCentro').addEventListener('change', applyFilters);
-      document.getElementById('filterFecha').addEventListener('change', applyFilters);
-      document.getElementById('filterInscripcion').addEventListener('change', applyFilters);
-    }
-
-    function applyFilters() {
-      const centro = document.getElementById('filterCentro').value;
-      const fechaValue = document.getElementById('filterFecha').value;
-      const requiere = document.getElementById('filterInscripcion').value;
-
-      let filtered = allActivities.slice();
-
-      if (centro) {
-        filtered = filtered.filter(a => a.centro === centro);
-      }
-
-      if (fechaValue) {
-        // Normalizamos todas las fechas a medianoche local
-        const [y, m, d] = fechaValue.split('-').map(Number);
-        const selectedDate = new Date(y, m - 1, d);
-        selectedDate.setHours(0, 0, 0, 0);
-
-        filtered = filtered.filter(a => {
-          const inicio = parseDate(a.fecha);
-          inicio.setHours(0, 0, 0, 0);
-
-          const fin = a.fecha_fin ? parseDate(a.fecha_fin) : inicio;
-          fin.setHours(0, 0, 0, 0);
-
-          return selectedDate >= inicio && selectedDate <= fin;
-        });
-      }
-
-      if (requiere) {
-        const val = requiere === 'true';
-        filtered = filtered.filter(a => a.requiere_inscripcion === val);
-      }
-
-      renderActivities(filtered);
-    }
-
-    function renderActivities(activities) {
-      const container = document.getElementById('activities');
-      container.innerHTML = '';
-
-      if (activities.length === 0) {
-        container.innerHTML = '<div class="activity">No hay actividades</div>';
-        return;
-      }
-
-      activities.forEach(act => {
-        const div = document.createElement('div');
-        div.className = 'activity';
-
-        const summary = document.createElement('div');
-        summary.className = 'activity-summary';
-        summary.innerHTML = `
-          <div><strong>${act.nombre}</strong></div>
-          <div>${act.fecha}</div>
-          <div>${act.centro}</div>
-          <div>${act.requiere_inscripcion ? 'Sí' : 'No'}</div>
-          <div>${act.publico || ''}</div>
-        `;
-
-        const detail = document.createElement('div');
-        detail.className = 'activity-detail hidden';
-        detail.innerHTML = Object.entries(act)
-          .filter(([k, v]) => v !== null && k !== 'warnings')
-          .map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`)
-          .join('');
-
-        div.appendChild(summary);
-        div.appendChild(detail);
-
-        div.addEventListener('click', () => {
-          detail.classList.toggle('hidden');
-        });
-
-        container.appendChild(div);
-      });
-    }
-
-    loadData();
-  </script>
+  <!-- Carga modular de JavaScript con módulos ES6 -->
+  <script type="module" src="js/modules/app.js"></script>
 </body>
 </html>
