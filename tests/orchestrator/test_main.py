@@ -52,10 +52,17 @@ def test_orchestrator_basic(tmp_path):
     data_dir.mkdir(parents=True)
 
     links = {
-        "gamonal_norte": [
+        "meta": {
+            "month": "202512",
+            "scraped_at": "2025-12-01T00:00:00+00:00",
+            "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+        },
+        "links": [
             {
+                "civico_id": "gamonal_norte",
                 "title": "Agenda Gamonal Norte Diciembre 2025",
                 "url": "file:///dummy.pdf",
+                "filename": "dummy",
                 "is_new": True
             }
         ]

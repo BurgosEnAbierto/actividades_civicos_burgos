@@ -18,6 +18,6 @@ def test_map_activity_to_schema_with_ages():
 
     mapped = map_activity_to_schema(activity)
 
-    assert mapped["Edad mínima"] == 4
-    assert mapped["Edad máxima"] == 7
-    assert mapped["Precio"] is None
+    assert mapped["edad_minima"] == 4
+    assert mapped["edad_maxima"] == 7
+    assert mapped["precio"] is None

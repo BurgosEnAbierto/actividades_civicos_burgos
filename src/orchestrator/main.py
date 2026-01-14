@@ -2,6 +2,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Callable
+import argparse
 
 from src.parser.registry import get_parser
 from src.downloader.download_pdf import download_pdf
@@ -50,15 +51,14 @@ def run_orchestrator(
 
     new_links = []
 
-    for civico_id, civico_links in links.items():
-        for link in civico_links:
-            if link.get("is_new"):
-                new_links.append(
-                    {
-                        "civico_id": civico_id,
-                        **link,
-                    }
-                )
+    for link in links["links"]:
+        if link.get("is_new"):
+            new_links.append(
+                {
+                    "civico_id": link["civico_id"],
+                    **link,
+                }
+            )
                 
     if not new_links:
         logger.info("No hay PDFs nuevos que procesar")
@@ -83,7 +83,7 @@ def run_orchestrator(
 
         pdf_dir.mkdir(parents=True, exist_ok=True)
 
-        pdf_path = download_fn(url, pdf_dir)
+        pdf_path = download_fn(url, pdf_dir) # TODO: descargar con nombre correcto apropiado en vez de numeros raros sin extension
 
         parser = _get_parser(civico_id)
         
@@ -110,3 +110,28 @@ def run_orchestrator(
     logger.info("Actividades guardadas en %s", output_file)
 
     return all_activities
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Orquestador de actividades de centros cívicos"
+    )
+    parser.add_argument(
+        "month",
+        help="Mes a procesar en formato YYYYMM (ej: 202512)",
+    )
+    parser.add_argument(
+        "--data-path",
+        default="data",
+        help="Ruta base de datos (por defecto: data/)",
+    )
+
+    args = parser.parse_args()
+
+    run_orchestrator(
+        month=args.month,
+        base_data_path=Path(args.data_path),
+    )
+
+
+if __name__ == "__main__":
+    main()

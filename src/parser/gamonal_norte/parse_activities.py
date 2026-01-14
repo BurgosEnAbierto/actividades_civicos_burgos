@@ -87,7 +87,8 @@ def parse_activity(
 
     text = activity_text.strip()
 
-    warning_logger = get_warning_logger(default_month)
+    month_str = f"{default_year:04d}{default_month:02d}"
+    warning_logger = get_warning_logger(month_str)
 
     # Fecha base
     try:

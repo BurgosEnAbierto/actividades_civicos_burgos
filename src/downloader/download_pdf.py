@@ -16,7 +16,7 @@ HEADERS = {
 def download_pdf(url: str, output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    filename = url.split("/")[-1].split("?")[0] or "document.pdf"
+    filename = url.split("/")[-2] or "document.pdf"
     path = output_dir / filename
 
     logger.info("Descargando PDF: %s", filename)
