@@ -22,6 +22,8 @@ En resumen, **pone a disposición de todos los burgaleses una agenda verdaderame
   - [📁 Estructura del repositorio](#-estructura-del-repositorio)
   - [🕷️ 1. Scraper](#️-1-scraper)
   - [📥 2. Downloader & Parser](#-2-downloader--parser)
+  - [🤖 2.4 Parser con IA](#-24-parser-con-ia-ollama--mistral)
+  - [🧪 2.5 Testing](#-testing)
   - [🌐 3. Web](#-3-web)
   - [🏛️ Datos fijos: centros cívicos](#️-datos-fijos-centros-cívicos)
 
@@ -55,13 +57,17 @@ burgos-civicos/
 │
 ├── parser/
 │   ├── __init__.py
-│   ├── registry.py
-│   └── <civico>/
+│   ├── registry.py           # Plugin registry para todos los cívicos
+│   ├── ai_parser.py          # Parser genérico basado en IA (Ollama+Mistral)
+│   ├── gamonal_norte/        # Parser específico (regex)
+│   │   ├── __init__.py
+│   │   ├── extract_raw.py
+│   │   ├── parse_raw.py
+│   │   └── process_pdf.py
+│   └── generic/              # Parser genérico (Camelot+IA) para otros cívicos
 │       ├── __init__.py
 │       ├── extract_raw.py
-│       ├── parse_raw.py
-│       ├── process_pdf.py
-│       └── parse_activities.py
+│       └── process_pdf.py
 |
 ├── utils/ # Funciones comunes (hash, fechas, schemas…)
 │   └── common.py
@@ -240,6 +246,65 @@ Para cada centro cívico:
     }
   ]
 }
+```
+
+---
+
+## 🤖 2.4 Parser con IA (Ollama + Mistral)
+
+El proyecto incluye un **parser basado en IA** que resuelve dos problemas principales:
+
+1. **Formato PDF variable:** Cada cívico puede cambiar la estructura de su PDF mes a mes
+2. **Cambios mensuales:** El mismo cívico puede formatear diferente cada mes
+
+### Características
+
+- **Ejecuta localmente:** Usa Ollama + Mistral 7B (sin API remota)
+- **Estructura garantizada:** Prompt engineering para output JSON consistente  
+- **Normalización:** Limpia formatos de hora, fecha, prefijos (*), etc.
+- **Fallback inteligente:** Si existe parser específico lo usa, sino usa IA
+
+### Uso
+
+**Verificar que Ollama está disponible:**
+```bash
+curl http://localhost:11434/api/tags
+```
+
+**Descargar modelo Mistral (primera vez ~4.4GB):**
+```bash
+ollama pull mistral
+```
+
+**Ejecutar orquestrador (procesa automáticamente con IA):**
+```bash
+python src/orchestrator/main.py 202601
+```
+
+### Cívicos actuales
+
+| Cívico | Parser | Método |
+|--------|--------|--------|
+| `gamonal_norte` | Específico (regex) | Regex pattern matching |
+| `rio_vena` | AI | Ollama + Mistral |
+| `vista_alegre` | AI | Ollama + Mistral |
+| `capiscol` | AI | Ollama + Mistral |
+| `san_agustin` | AI | Ollama + Mistral |
+| `huelgas` | AI | Ollama + Mistral |
+| `san_juan` | AI | Ollama + Mistral |
+
+---
+
+## 🧪 2.5 Testing
+
+### Ubicación de tests
+
+Todos los tests unitarios están en `tests/` (sin scripts adicionales de verificación).
+
+### Ejecutar tests
+
+```bash
+.venv/bin/python -m pytest -v
 ```
 
 ---

@@ -7,6 +7,7 @@ import argparse
 from src.parser.registry import get_parser
 from src.downloader.download_pdf import download_pdf
 from src.validators.validate_activities import validate_activities
+from src.utils.logging_config import setup_logging
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "actividades.schema.v1.json"
 
@@ -23,6 +24,18 @@ def run_orchestrator(
 ):
     """
     Orquesta la descarga, parseo y validación de actividades para un mes.
+    
+    Flujo:
+    1. Lee links.json
+    2. Para cada link con is_new=true:
+       - Descarga PDF
+       - Extrae raw
+       - Parsea actividades
+       - Agrega a actividades.json
+       - Marca is_new=false
+    3. Valida schema
+    4. Guarda actividades.json actualizado
+    5. Guarda links.json actualizado
     """
 
     if base_data_path is None:
@@ -42,73 +55,156 @@ def run_orchestrator(
 
     month_dir = base_data_path / month
     links_file = month_dir / "links.json"
+    actividades_file = month_dir / "actividades.json"
+    pdfs_dir = month_dir / "pdfs"
 
     if not links_file.exists():
         logger.warning("No existe links.json para el mes %s", month)
         return None
 
-    links = json.loads(links_file.read_text(encoding="utf-8"))
+    # Cargar links.json
+    links_data = json.loads(links_file.read_text(encoding="utf-8"))
+    links = links_data["links"]
 
-    new_links = []
+    # Cargar actividades.json existentes (para agregar nuevas)
+    if actividades_file.exists():
+        all_activities = json.loads(actividades_file.read_text(encoding="utf-8"))
+        logger.info("Cargadas %d cívicos de actividades.json existente", len(all_activities))
+    else:
+        all_activities = {}
+        logger.info("Creando actividades.json nuevo para %s", month)
 
-    for link in links["links"]:
-        if link.get("is_new"):
-            new_links.append(
-                {
-                    "civico_id": link["civico_id"],
-                    **link,
-                }
-            )
-                
-    if not new_links:
-        logger.info("No hay PDFs nuevos que procesar")
-        return
-
-    all_activities: dict[str, list[dict]] = {}
-
+    # Cargar schema
     with SCHEMA_PATH.open(encoding="utf-8") as f:
         ACTIVITIES_SCHEMA = json.load(f)
 
+    # Filtrar links nuevos
+    new_links = [link for link in links if link.get("is_new")]
+    
+    if not new_links:
+        logger.info("No hay PDFs nuevos que procesar")
+        return all_activities
+
+    logger.info("Procesando %d cívicos nuevos", len(new_links))
+
+    # Procesar cada link nuevo - guardar e actualizar tras CADA cívico
+    errors = []
     for link in new_links:
         civico_id = link["civico_id"]
         url = link["url"]
 
-        logger.info("Procesando %s → %s", civico_id, url)
+        try:
+            logger.info("Procesando %s → %s", civico_id, url)
 
-        pdf_dir = (
-            month_dir
-            / "pdfs"
-            / civico_id
-        )
+            # Crear directorio de PDFs
+            pdfs_dir.mkdir(parents=True, exist_ok=True)
 
-        pdf_dir.mkdir(parents=True, exist_ok=True)
+            # Descargar PDF
+            try:
+                pdf_path = download_fn(url, pdfs_dir)
+            except Exception as e:
+                logger.error(f"  ✗ Error descargando PDF: {e}")
+                errors.append((civico_id, f"Descarga: {e}"))
+                continue
 
-        pdf_path = download_fn(url, pdf_dir) # TODO: descargar con nombre correcto apropiado en vez de numeros raros sin extension
+            # Obtener parser para este cívico
+            try:
+                parser = _get_parser(civico_id)
+            except Exception as e:
+                logger.error(f"  ✗ Error obteniendo parser: {e}")
+                errors.append((civico_id, f"Parser: {e}"))
+                continue
+            
+            # Extraer raw
+            try:
+                raw = parser["extract_raw"](pdf_path)
+                if not raw:
+                    logger.warning(f"  ⚠ extract_raw devolvió lista vacía para {civico_id}")
+                    errors.append((civico_id, "extract_raw vacío"))
+                    continue
+            except Exception as e:
+                logger.error(f"  ✗ Error en extract_raw: {e}")
+                errors.append((civico_id, f"extract_raw: {e}"))
+                continue
 
-        parser = _get_parser(civico_id)
-        
-        raw = parser["extract_raw"](pdf_path)
+            # Guardar raw para debugging
+            raw_path = month_dir / f"actividades_raw_{civico_id}.json"
+            try:
+                raw_path.write_text(
+                    json.dumps(raw, ensure_ascii=False, indent=2),
+                    encoding="utf-8"
+                )
+            except Exception as e:
+                logger.warning(f"  ⚠ No se pudo guardar raw: {e}")
 
-        raw_path = month_dir / f"actividades_raw_{civico_id}.json"
-        raw_path.write_text(
-            json.dumps(raw, ensure_ascii=False, indent=2),
-            encoding="utf-8"
-        )
+            # Parsear actividades
+            try:
+                activities = parser["parse_raw"](raw, month=month)
+                if not activities:
+                    logger.warning(f"  ⚠ parse_raw devolvió lista vacía para {civico_id}")
+                    activities = []
+            except Exception as e:
+                logger.error(f"  ✗ Error en parse_raw: {e}")
+                errors.append((civico_id, f"parse_raw: {e}"))
+                continue
 
-        activities = parser["parse_raw"](raw, month=month)
+            logger.info(f"  ✓ {len(activities)} actividades parseadas para {civico_id}")
 
-        all_activities.setdefault(civico_id, []).extend(activities)
+            # Agregar a diccionario (crea lista si no existe)
+            if civico_id not in all_activities:
+                all_activities[civico_id] = []
+            
+            all_activities[civico_id].extend(activities)
 
-    validate_activities(all_activities, ACTIVITIES_SCHEMA)
+            # Validar este cívico antes de guardar
+            civico_data = {civico_id: all_activities[civico_id]}
+            try:
+                validate_activities(civico_data, ACTIVITIES_SCHEMA)
+            except Exception as e:
+                logger.error(f"  ✗ Error de validación para {civico_id}: {e}")
+                errors.append((civico_id, f"Schema: {e}"))
+                # Remover las actividades inválidas
+                del all_activities[civico_id]
+                continue
 
-    output_file = month_dir / "actividades.json"
-    output_file.write_text(
-        json.dumps(all_activities, ensure_ascii=False, indent=2),
-        encoding="utf-8"
-    )
+            # Guardar actividades.json actualizado (incremental)
+            try:
+                actividades_file.write_text(
+                    json.dumps(all_activities, ensure_ascii=False, indent=2),
+                    encoding="utf-8"
+                )
+                logger.info(f"  ✓ Guardado en {actividades_file}")
+            except Exception as e:
+                logger.error(f"  ✗ Error guardando actividades.json: {e}")
+                errors.append((civico_id, f"Guardar JSON: {e}"))
+                continue
 
-    logger.info("Actividades guardadas en %s", output_file)
+            # Marcar este link como procesado
+            try:
+                link["is_new"] = False
+                links_data["links"] = links
+                links_file.write_text(
+                    json.dumps(links_data, ensure_ascii=False, indent=2),
+                    encoding="utf-8"
+                )
+                logger.info(f"  ✓ Marcado is_new=false en links.json")
+            except Exception as e:
+                logger.error(f"  ✗ Error actualizando links.json: {e}")
+                errors.append((civico_id, f"Actualizar links: {e}"))
 
+        except Exception as e:
+            logger.error(f"❌ Error inesperado procesando {civico_id}: {e}")
+            errors.append((civico_id, f"Inesperado: {e}"))
+
+    # Resumen final
+    logger.info("✅ Orquestrador completado")
+    if errors:
+        logger.warning(f"⚠ {len(errors)} cívicos con errores:")
+        for civico, error in errors:
+            logger.warning(f"  - {civico}: {error}")
+    else:
+        logger.info("✓ Todos los cívicos procesados correctamente")
+    
     return all_activities
 
 def main():
@@ -126,6 +222,11 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Configurar logging: INFO a consola, WARNING a archivo
+    month_dir = Path(args.data_path) / args.month
+    month_dir.mkdir(parents=True, exist_ok=True)
+    setup_logging(log_file=month_dir / "warnings.log")
 
     run_orchestrator(
         month=args.month,

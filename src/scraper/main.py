@@ -7,6 +7,7 @@ from src.scraper.fetch_page import fetch_page
 from src.scraper.parse_links import extract_pdf_links
 from src.utils.detect_month import detect_month
 from src.scraper.compare_links import mark_new_links
+from src.utils.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -62,5 +63,7 @@ def run_scraper() -> dict:
 
 
 if __name__ == "__main__":
+    setup_logging()
+
     result = run_scraper()
     logger.info("Resultado: %s", result)

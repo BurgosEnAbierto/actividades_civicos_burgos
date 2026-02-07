@@ -210,4 +210,10 @@ __marimo__/
 .vscode/
 
 # Custom Data
-data/
+data/*
+!data/*/
+data/*/*
+
+!data/civicos.json
+!data/*/actividades.json
+
