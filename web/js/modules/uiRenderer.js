@@ -48,7 +48,7 @@ export function renderFilters(civicos, civicosMap, todayDate) {
 
   const fechaInput = document.getElementById('filterFecha');
   if (fechaInput) {
-    fechaInput.value = todayDate;
+    fechaInput.value = '';
   }
 }
 
@@ -56,8 +56,9 @@ export function renderFilters(civicos, civicosMap, todayDate) {
  * Renderiza la lista de actividades
  * @param {Array} activities - Array de actividades a renderizar
  * @param {Object} civicosMap - Mapeo de ID -> datos civico
+ * @param {Object} linksMap - Mapeo de civico_id -> URL del PDF
  */
-export function renderActivities(activities, civicosMap) {
+export function renderActivities(activities, civicosMap, linksMap = {}) {
   const container = document.getElementById('activities');
   if (!container) return;
 
@@ -70,7 +71,7 @@ export function renderActivities(activities, civicosMap) {
   }
 
   activities.forEach(act => {
-    const activityElement = createActivityElement(act, civicosMap);
+    const activityElement = createActivityElement(act, civicosMap, linksMap);
     container.appendChild(activityElement);
   });
 }
@@ -79,13 +80,16 @@ export function renderActivities(activities, civicosMap) {
  * Crea un elemento DOM para una actividad
  * @param {Object} act - Actividad
  * @param {Object} civicosMap - Mapeo de ID -> datos civico
+ * @param {Object} linksMap - Mapeo de civico_id -> URL del PDF
  * @returns {HTMLElement}
  */
-function createActivityElement(act, civicosMap) {
+function createActivityElement(act, civicosMap, linksMap = {}) {
   const div = document.createElement('div');
   div.className = 'activity';
 
   const civicName = civicosMap[act.civico]?.nombre || act.civico;
+  const civicPhone = civicosMap[act.civico]?.telefono;
+  const pdfUrl = linksMap[act.civico];
   const inscriptionText = act.requiere_inscripcion
     ? 'Requiere inscripción'
     : 'Sin inscripción';
@@ -104,12 +108,13 @@ function createActivityElement(act, civicosMap) {
 
   const detail = document.createElement('div');
   detail.className = 'activity-detail hidden';
-  detail.innerHTML = createActivityDetailHTML(act);
+  detail.innerHTML = createActivityDetailHTML(act, pdfUrl, civicPhone, civicName);
 
   div.appendChild(summary);
   div.appendChild(detail);
 
-  div.addEventListener('click', () => {
+  summary.addEventListener('click', (e) => {
+    // Solo cerrar si el click es en el summary, no en los enlaces del detail
     div.classList.toggle('expanded');
     detail.classList.toggle('hidden');
   });
@@ -120,9 +125,12 @@ function createActivityElement(act, civicosMap) {
 /**
  * Crea el HTML del detalle de una actividad
  * @param {Object} act - Actividad
+ * @param {string} pdfUrl - URL del PDF de la actividad
+ * @param {string} civicPhone - Teléfono del cívico
+ * @param {string} civicName - Nombre del cívico
  * @returns {string} HTML del detalle
  */
-function createActivityDetailHTML(act) {
+function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName) {
   const items = [];
 
   if (act.descripcion) {
@@ -190,7 +198,7 @@ function createActivityDetailHTML(act) {
     });
   }
 
-  return items
+  let detailHTML = items
     .map(
       item => `
       <div class="activity-detail-item">
@@ -200,6 +208,32 @@ function createActivityDetailHTML(act) {
     `
     )
     .join('');
+
+  // Agregar sección de acciones (enlaces)
+  detailHTML += '<div class="activity-actions">';
+
+  if (pdfUrl) {
+    detailHTML += `
+      <a href="${escapeHtml(pdfUrl)}" target="_blank" rel="noopener noreferrer" class="action-link pdf-link">
+        📄 Ver actividad en el PDF original
+      </a>
+    `;
+  }
+
+  if (civicPhone) {
+    detailHTML += `
+      <a href="tel:${escapeHtml(civicPhone)}" class="action-link phone-link" title="Llamar a ${escapeHtml(civicName)}">
+        ☎️ Contactar con el Cívico
+      </a>
+      <div class="action-link phone-number" title="Copiar número de teléfono">
+        📋 ${escapeHtml(civicPhone)}
+      </div>
+    `;
+  }
+
+  detailHTML += '</div>';
+
+  return detailHTML;
 }
 
 /**

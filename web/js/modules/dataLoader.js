@@ -12,19 +12,20 @@ export async function getAvailableMonths() {
   const currentYear = currentDate.getFullYear();
   const currentMonthNum = currentDate.getMonth() + 1;
 
-  // Buscar meses de los últimos 12 meses
-  for (let i = 0; i < 12; i++) {
+  // Buscar meses de los últimos 6 meses
+  for (let i = 0; i < 6; i++) {
     let d = new Date(currentYear, currentMonthNum - 1 - i, 1);
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const monthStr = `${year}${month}`;
 
-    const response = await fetch(`../data/${monthStr}/actividades.json`)
-      .then(res => (res.ok ? res.json().then(() => monthStr) : null))
-      .catch(() => null);
-
-    if (response) {
-      months.push(monthStr);
+    try {
+      const response = await fetch(`../../data/${monthStr}/actividades.json`);
+      if (response.ok) {
+        months.push(monthStr);
+      }
+    } catch (err) {
+      // Silenciosamente ignorar errores de fetch
     }
   }
 
@@ -37,7 +38,7 @@ export async function getAvailableMonths() {
  */
 export async function loadCivicos() {
   try {
-    const res = await fetch('../data/civicos.json');
+    const res = await fetch('../../data/civicos.json');
     return await res.json();
   } catch (err) {
     console.error('Error cargando civicos.json:', err);
@@ -52,13 +53,39 @@ export async function loadCivicos() {
  */
 export async function loadActivitiesForMonth(monthStr) {
   try {
-    const res = await fetch(`../data/${monthStr}/actividades.json`);
+    const res = await fetch(`../../data/${monthStr}/actividades.json`);
     if (!res.ok) {
       throw new Error(`No encontrado: ${monthStr}`);
     }
     return await res.json();
   } catch (err) {
     console.error(`Error cargando actividades del mes ${monthStr}:`, err);
+    return {};
+  }
+}
+
+/**
+ * Carga los links de PDFs de un mes específico
+ * @param {string} monthStr - Mes en formato YYYYMM
+ * @returns {Promise<Object>} Objeto con civico_id -> URL del PDF
+ */
+export async function loadLinksForMonth(monthStr) {
+  try {
+    const res = await fetch(`../../data/${monthStr}/links.json`);
+    if (!res.ok) {
+      return {};
+    }
+    const data = await res.json();
+    // Convertir array de links a objeto civico_id -> url
+    const linksMap = {};
+    if (data.links && Array.isArray(data.links)) {
+      data.links.forEach(link => {
+        linksMap[link.civico_id] = link.url;
+      });
+    }
+    return linksMap;
+  } catch (err) {
+    console.error(`Error cargando links del mes ${monthStr}:`, err);
     return {};
   }
 }

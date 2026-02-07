@@ -11,11 +11,12 @@ class App {
   constructor() {
     this.allActivities = [];
     this.civicosMap = {};
+    this.linksMap = {};
     this.availableMonths = [];
     this.currentMonth = null;
     this.currentFilters = {
       civico: '',
-      fecha: this.getTodayDateString(),
+      fecha: '',
       publico: '',
       inscripcion: ''
     };
@@ -80,6 +81,9 @@ class App {
   async loadCurrentMonth() {
     const data = await dataLoader.loadActivitiesForMonth(this.currentMonth);
     this.allActivities = dataLoader.normalizeActivities(data);
+    
+    // Cargar también los links de PDFs del mes
+    this.linksMap = await dataLoader.loadLinksForMonth(this.currentMonth);
   }
 
   /**
@@ -134,7 +138,14 @@ class App {
 
     await this.loadCurrentMonth();
 
-    // Reinicializar filtros
+    // Reinicializar filtros (estado y DOM)
+    this.currentFilters = {
+      civico: '',
+      fecha: '',
+      publico: '',
+      inscripcion: ''
+    };
+
     const civicos = filterEngine.getUniqueCivicos(this.allActivities);
     uiRenderer.renderFilters(
       civicos,
@@ -178,7 +189,7 @@ class App {
       this.allActivities,
       this.currentFilters
     );
-    uiRenderer.renderActivities(filtered, this.civicosMap);
+    uiRenderer.renderActivities(filtered, this.civicosMap, this.linksMap);
   }
 
   /**
