@@ -139,7 +139,7 @@ def run_orchestrator(
 
             # Parsear actividades
             try:
-                activities = parser["parse_raw"](raw, month=month)
+                activities = parser["parse_raw"](raw, month=month, civico=civico_id)
                 if not activities:
                     logger.warning(f"  ⚠ parse_raw devolvió lista vacía para {civico_id}")
                     activities = []

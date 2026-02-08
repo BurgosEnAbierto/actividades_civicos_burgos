@@ -14,7 +14,7 @@ class CivicoParser(ABC):
 
     @abstractmethod
     def parse_raw(
-        self, raw_activities: List[str], *, month: str
+        self, raw_activities: List[str], *, month: str, civico: str = ""
     ) -> List[Dict]:
         """
         Devuelve actividades estructuradas

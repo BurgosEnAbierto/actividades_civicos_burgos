@@ -14,7 +14,7 @@ def fake_extract_raw(pdf_path):
         ["MIERCOLES 4", "(*) Yoga en parejas. 19:30 h. Sala de encuentro. Público: adultos"]
     ]
 
-def fake_parse_raw(raw, *, month):
+def fake_parse_raw(raw, *, month, civico=""):
     return [
         {
             "fecha": "04/12/2025",

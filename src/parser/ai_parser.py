@@ -81,7 +81,8 @@ def parse_activity_with_ai(
     day: str,
     text: str,
     month_year: str,
-    model: str = OLLAMA_MODEL
+    model: str = OLLAMA_MODEL,
+    civico: str = ""
 ) -> Optional[List[Dict]]:
     """
     Usa Ollama para parsear una actividad/celda.
@@ -91,6 +92,7 @@ def parse_activity_with_ai(
         text: Texto bruto de la actividad
         month_year: Mes y año (ej: "202512")
         model: Modelo de Ollama a usar
+        civico: ID del civico para logging (opcional)
     
     Returns:
         Lista de actividades parseadas o None si falla
@@ -108,7 +110,8 @@ def parse_activity_with_ai(
     )
     
     try:
-        logger.info(f"Enviando a IA (modelo: {model}): día={day}")
+        civico_str = f" [{civico}]" if civico else ""
+        logger.info(f"Enviando a IA (modelo: {model}){civico_str}: día={day}")
         
         response = requests.post(
             f"{OLLAMA_BASE_URL}/api/generate",
@@ -514,13 +517,14 @@ def _normalize_activity(activity: dict, day: str, month: int, year: int) -> dict
     return activity
 
 
-def parse_raw_ai(raw_rows: List[List[str]], *, month: str) -> List[Dict]:
+def parse_raw_ai(raw_rows: List[List[str]], *, month: str, civico: str = "") -> List[Dict]:
     """
     Parsea filas raw usando IA.
     
     Args:
         raw_rows: Lista de [día, texto] extraído del PDF
         month: Mes en formato YYYYMM
+        civico: ID del civico para logging (opcional)
     
     Returns:
         Lista de actividades estructuradas
@@ -547,29 +551,33 @@ def parse_raw_ai(raw_rows: List[List[str]], *, month: str) -> List[Dict]:
             day_parts = day_cell.split()
             day_num = day_parts[-1]  # Último elemento es el día
         except Exception as e:
-            logger.warning(f"No se pudo extraer día de '{day_cell}': {e}")
+            civico_str = f" [{civico}]" if civico else ""
+            logger.warning(f"No se pudo extraer día{civico_str} de '{day_cell}': {e}")
             continue
         
         # Llamar a IA
         parsed_activities = parse_activity_with_ai(
             day=day_num,
             text=text_cell,
-            month_year=month
+            month_year=month,
+            civico=civico
         )
         
         if parsed_activities:
             actividades.extend(parsed_activities)
         else:
-            logger.warning(f"IA no pudo parsear: {text_cell[:50]}")
+            civico_str = f" [{civico}]" if civico else ""
+            logger.warning(f"IA no pudo parsear{civico_str}: {text_cell[:50]}")
     
     # Validar y filtrar actividades con validación completa
     valid_activities = []
+    civico_str = f" [{civico}]" if civico else ""
     for act in actividades:
         is_valid, error_msg = _validate_normalized_activity(act)
         if is_valid:
             valid_activities.append(act)
         else:
-            logger.warning(f"Actividad descartada: {error_msg} - {act.get('nombre', 'sin nombre')}")
+            logger.warning(f"Actividad descartada{civico_str}: {error_msg} - {act.get('nombre', 'sin nombre')}")
     
     # Ordenar por fecha
     valid_activities.sort(key=_sort_key)
