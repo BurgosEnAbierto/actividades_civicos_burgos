@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda de actividades - Centros Cívicos de Burgos</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-top">
+        <img src="BurgosEnAbierto_Logo.png" alt="Logo Burgos en Abierto" />
+        <div class="header-branding">
+          <h2>Burgos en Abierto</h2>
+          <p>Datos Públicos Accesibles</p>
+        </div>
+      </div>
+      <div class="header-content">
+        <h1>Agenda de actividades - Centros Cívicos de Burgos</h1>
+        <div class="header-disclaimer">
+          <a href="#disclaimer">Disclaimer: Por qué esta web no debería existir</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="month-selector">
+      <label for="monthSelect">Selecciona mes:</label>
+      <select id="monthSelect">
+        <option value="">Cargando...</option>
+      </select>
+    </div>
+
+    <div class="filters">
+      <label for="filterCentro">
+        Centro cívico
+        <select id="filterCentro">
+          <option value="">Todos</option>
+        </select>
+      </label>
+
+      <label for="filterFecha">
+        Fecha
+        <input type="date" id="filterFecha" />
+      </label>
+
+      <label for="filterPublico">
+        Público
+        <input type="text" id="filterPublico" placeholder="ej: niños, adultos..." />
+      </label>
+
+      <label for="filterInscripcion">
+        Requiere inscripción
+        <select id="filterInscripcion">
+          <option value="">Todos</option>
+          <option value="true">Sí</option>
+          <option value="false">No</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="activities" class="activities"></div>
+
+    <!-- Disclaimer Section -->
+    <div id="disclaimer" class="disclaimer-section">
+      <h2>¿Por qué existe esta web?</h2>
+      <p>
+        La agenda mensual de actividades de los Centros Cívicos del Ayuntamiento de Burgos <strong>no debería necesitar un proyecto externo</strong>.
+        La información ya existe y se publica cada mes, pero lo hace en forma de <strong>PDFs estáticos y poco accesibles</strong>, lo que dificulta su uso, búsqueda y reutilización por parte de los ciudadanos.
+      </p>
+      <p>
+        Este proyecto busca <strong>mejorar la transparencia y accesibilidad</strong> creando un sistema que:
+      </p>
+      <ul>
+        <li>Descarga los PDFs oficiales del Ayuntamiento.</li>
+        <li>Los transforma en datos estructurados y abiertos.</li>
+        <li>Permite consultarlos fácilmente por fecha, público, centro o tipo de actividad.</li>
+      </ul>
+      <p>
+        En resumen, <strong>pone a disposición de todos los burgaleses una agenda verdaderamente usable</strong>, algo que debería venir de serie con los datos públicos del Ayuntamiento.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        <a href="https://github.com/BurgosEnAbierto" target="_blank">Burgos en Abierto</a>: 
+        Proyecto Agenda de Actividades - Cívicos Burgos. V0.9.0 | 
+        <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU GENERAL PUBLIC LICENSE</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Carga modular de JavaScript con módulos ES6 -->
+  <script type="module" src="js/modules/app.js"></script>
+</body>
+</html>

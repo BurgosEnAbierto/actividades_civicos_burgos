@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://burgos-civicos.es/schemas/civicos.schema.v1.json",
+  "title": "Centros Cívicos de Burgos",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": [
+      "nombre",
+      "direccion",
+      "telefono",
+      "email"
+    ],
+    "properties": {
+      "nombre": {
+        "type": "string",
+        "minLength": 1
+      },
+      "direccion": {
+        "type": "string",
+        "minLength": 1
+      },
+      "telefono": {
+        "type": "string",
+        "minLength": 1
+      },
+      "email": {
+        "type": "string",
+        "format": "email"
+      }
+    },
+    "additionalProperties": false
+  }
+}
