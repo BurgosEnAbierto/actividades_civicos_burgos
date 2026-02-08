@@ -209,11 +209,12 @@ __marimo__/
 # VSCode
 .vscode/
 
-# Custom Data
+# Custom Data except final json files
 data/*
 !data/*/
 data/*/*
 
 !data/civicos.json
 !data/*/actividades.json
+!data/*/links.json
 

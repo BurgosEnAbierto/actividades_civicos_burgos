@@ -37,14 +37,14 @@ INSTRUCCIONES:
 1. DEVUELVE UN ARRAY DE JSON (incluso si es una sola actividad)
 2. CADA JSON DEBE TENER: nombre, descripcion, fecha, fecha_fin, hora, hora_fin, requiere_inscripcion, lugar, publico, edad_minima, edad_maxima, precio
 3. DEVUELVE SOLO JSON VÁLIDO - sin markdown, sin explicación, sin comentarios
-4. USO DE COMILLAS CORRECTAS: todas las cadenas en COMILLAS DOBLES, nunca comillas simples
+4. USO DE COMILLAS CORRECTAS: todas las cadenas en COMILLAS DOBLES, nunca comillas simples o caracteres especiales
 5. Limpiar asteriscos: quitar "(*)" o "*)" del inicio del nombre
-6. FORMATO DE HORAS: "HH:MM" o null (ejemplo: "19:00")
-7. FORMATO DE FECHAS: "DD/MM/YYYY" o null
-8. requiere_inscripcion: boolean true/false (true si texto original empieza con "(*)")
-9. publico: NUNCA null ni vacío, extraer qué público es
-10. edades: números (1-120) o null
-11. precio: número o null
+6. FORMATO DE HORAS: "HH:MM" o null (ejemplo: "19:00"). Convertir horas en formato "HH,MM" (con coma) a "HH:MM"
+7. FORMATO DE FECHAS: "DD/MM/YYYY" o null. El día viene en contexto (ej: "LUNES 2" = 02/02/2026). Extraer el número.
+8. requiere_inscripcion: boolean true/false (true si texto original empieza con "(*)" o contiene "Con inscripción")
+9. publico: NUNCA null ni vacío, extraer qué público es. Ejemplos: "adultos", "infantil", "familiar", "juvenil"
+10. edades: números (1-120) o null. IMPORTANTE: "18 meses" = edad_minima: 1, NO 18. Los "meses" se convierten dividiendo por 12.
+11. precio: número (float) o null. Buscar: "€", "euros", "€ precio", "12,00€" → 12.0
 
 Día: {day}
 Mes/Año: {month_year}

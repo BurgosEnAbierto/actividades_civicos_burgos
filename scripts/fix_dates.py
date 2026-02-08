@@ -10,7 +10,7 @@ from collections import defaultdict
 
 def fix_dates(month: str, dry_run: bool = True):
     """
-    Corrige las fechas en actividades.json para un mes específico
+    Corrige y ordena las fechas en actividades.json para un mes específico
     """
     actividades_file = Path(f"data/{month}/actividades.json")
     
@@ -74,6 +74,9 @@ def fix_dates(month: str, dry_run: bool = True):
                                 print(f"  {civico}: {old_fecha} → {activity['fecha']}")
             except (ValueError, IndexError):
                 pass
+
+            # Ordenar actividades por fecha
+            activities.sort(key=lambda x: tuple(map(int, x.get("fecha", "0/0/0").split("/")))[::-1])
     
     if dry_run:
         print(f"Se corregirían {fixed_count} fechas")
