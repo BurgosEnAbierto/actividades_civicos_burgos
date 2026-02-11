@@ -1,0 +1,8 @@
+# Ignore all data except json files used for website
+*
+!*
+*/*
+
+!civicos.json
+!*/actividades.json
+!*/links.json

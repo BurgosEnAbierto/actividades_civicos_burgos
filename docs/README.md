@@ -39,9 +39,9 @@ web/js/
 - Métodos: `init()`, `loadCivicos()`, `loadAvailableMonths()`, `applyFilters()`
 
 **`dataLoader.js`** - Carga de datos desde JSON
-- `getAvailableMonths()` - Detecta meses disponibles en `/data/`
-- `loadCivicos()` - Carga `/data/civicos.json`
-- `loadActivitiesForMonth(monthStr)` - Carga `/data/YYYYMM/actividades.json`
+- `getAvailableMonths()` - Detecta meses disponibles en `/docs/data/`
+- `loadCivicos()` - Carga `/docs/data/civicos.json`
+- `loadActivitiesForMonth(monthStr)` - Carga `/docs/data/YYYYMM/actividades.json`
 - `normalizeActivities(data)` - Convierte estructura anidada a array plano
 
 **`dateUtils.js`** - Utilidades de fechas

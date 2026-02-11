@@ -13,7 +13,7 @@ SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "actividades.sch
 
 logger = logging.getLogger(__name__)
 
-DATA_DIR = Path("data")
+DATA_DIR = Path("docs/data")
 
 def run_orchestrator(
     month: str,
@@ -39,7 +39,7 @@ def run_orchestrator(
     """
 
     if base_data_path is None:
-        base_data_path = Path("data")
+        base_data_path = Path("docs/data")
 
     if download_fn is None:
         from src.downloader.download_pdf import download_pdf
@@ -217,8 +217,8 @@ def main():
     )
     parser.add_argument(
         "--data-path",
-        default="data",
-        help="Ruta base de datos (por defecto: data/)",
+        default="docs/data",
+        help="Ruta base de datos (por defecto: docs/data/)",
     )
 
     args = parser.parse_args()

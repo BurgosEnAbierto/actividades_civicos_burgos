@@ -12,7 +12,7 @@ def fix_dates(month: str, dry_run: bool = True):
     """
     Corrige y ordena las fechas en actividades.json para un mes específico
     """
-    actividades_file = Path(f"data/{month}/actividades.json")
+    actividades_file = Path(f"docs/data/{month}/actividades.json")
     
     if not actividades_file.exists():
         print(f"❌ Archivo no existe: {actividades_file}")

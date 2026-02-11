@@ -16,7 +16,7 @@ def verify_dates(month: str):
     Args:
         month: Mes en formato YYYYMM (ej: 202602)
     """
-    actividades_file = Path(f"data/{month}/actividades.json")
+    actividades_file = Path(f"docs/data/{month}/actividades.json")
     
     if not actividades_file.exists():
         print(f"❌ Archivo no existe: {actividades_file}")
