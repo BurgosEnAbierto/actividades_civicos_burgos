@@ -20,7 +20,7 @@ export async function getAvailableMonths() {
     const monthStr = `${year}${month}`;
 
     try {
-      const response = await fetch(`../../data/${monthStr}/actividades.json`);
+      const response = await fetch(`data/${monthStr}/actividades.json`);
       if (response.ok) {
         months.push(monthStr);
       }
@@ -38,7 +38,7 @@ export async function getAvailableMonths() {
  */
 export async function loadCivicos() {
   try {
-    const res = await fetch('../../data/civicos.json');
+    const res = await fetch('data/civicos.json');
     return await res.json();
   } catch (err) {
     console.error('Error cargando civicos.json:', err);
@@ -53,7 +53,7 @@ export async function loadCivicos() {
  */
 export async function loadActivitiesForMonth(monthStr) {
   try {
-    const res = await fetch(`../../data/${monthStr}/actividades.json`);
+    const res = await fetch(`data/${monthStr}/actividades.json`);
     if (!res.ok) {
       throw new Error(`No encontrado: ${monthStr}`);
     }
@@ -71,7 +71,7 @@ export async function loadActivitiesForMonth(monthStr) {
  */
 export async function loadLinksForMonth(monthStr) {
   try {
-    const res = await fetch(`../../data/${monthStr}/links.json`);
+    const res = await fetch(`data/${monthStr}/links.json`);
     if (!res.ok) {
       return {};
     }

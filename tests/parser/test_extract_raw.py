@@ -14,7 +14,7 @@ class TestExtractRaw:
     def test_extract_raw_format(self, civico_id):
         """Prueba que extract_raw devuelve lista con formato correcto"""
         # Skip si no hay PDFs de ejemplo
-        pdfs_dir = Path("data/202601/pdfs")
+        pdfs_dir = Path("docs/data/202601/pdfs")
         pdf_paths = list(pdfs_dir.glob(f"{civico_id}/*.pdf")) or list(
             pdfs_dir.glob(f"examples/*{civico_id.upper()}*")
         )
@@ -50,7 +50,7 @@ class TestExtractRaw:
 
     def test_extract_raw_returns_reasonable_count(self):
         """Verifica que extract_raw retorna cantidad razonable de filas"""
-        pdfs_dir = Path("data/202601/pdfs")
+        pdfs_dir = Path("docs/data/202601/pdfs")
         for civico_id in CIVICOS:
             pdf_paths = list(pdfs_dir.glob(f"{civico_id}/*.pdf")) or list(
                 pdfs_dir.glob(f"examples/*{civico_id.upper()}*")

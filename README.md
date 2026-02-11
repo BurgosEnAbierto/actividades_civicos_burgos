@@ -37,7 +37,7 @@ El proyecto se divide claramente en tres grandes bloques, con responsabilidades 
 - **Downloader & Parser** – descarga y transformación de PDFs a datos estructurados  
 - **Web** – visualización y consulta de las actividades  
 
-Además, existe una carpeta `data/` que actúa como almacén de datos versionado por mes.
+Además, existe una carpeta `docs/data/` que actúa como almacén de datos versionado por mes.
 
 ---
 
@@ -72,25 +72,17 @@ burgos-civicos/
 ├── utils/ # Funciones comunes (hash, fechas, schemas…)
 │   └── common.py
 │
-├── data/
-│   ├── civicos.json # Datos fijos de los centros cívicos
-│   └── yyyymm/ # Datos por mes
-│       ├── links.json # Metadatos de PDFs detectados
-│       ├── pdfs/ # PDFs descargados
-│       │   ├── gamonal_norte.pdf
-│       │   └── …
-│       ├── actividades_raw_<civico>.json
-│       └── actividades.json # Actividades estructuradas finales
-│
-├── schemas/ # JSON Schemas
-│   ├── civicos.schema.json
-│   ├── actividades.schema.json
-│   └── links.schema.json
-│
-├── web/ # Frontend (HTML + JS)
-│   ├── index.html
-│   ├── app.js
-│   └── style.css
+├── docs/
+│   ├── index.html           # Frontend
+│   ├── js/                  # Módulos ES6
+│   ├── style.css
+│   └── data/                # Almacén de datos versionado por mes
+│       ├── civicos.json
+│       └── yyyymm/
+│           ├── links.json
+│           ├── pdfs/
+│           ├── actividades_raw_<civico>.json
+│           └── actividades.json
 │
 ├── README.md
 └── requirements.txt
@@ -117,7 +109,7 @@ URL pública del Ayuntamiento con la agenda de centros cívicos.
 
 ### Salida
 
-`data/yyyymm/links.json`
+`docs/data/yyyymm/links.json`
 
 **Ejemplo:**
 
@@ -156,7 +148,7 @@ Diaria, especialmente últimos y primeros días de mes.
 
 **Lógica clave:**
 
-- Si `data/yyyymm/links.json` no existe → se considera un mes nuevo.  
+- Si `docs/data/yyyymm/links.json` no existe → se considera un mes nuevo.  
 - Si existe pero el contenido es distinto → se actualiza.  
 - Solo en esos casos se dispara el siguiente bloque.
 
@@ -168,9 +160,9 @@ Este bloque solo se ejecuta cuando hay un mes nuevo.
 
 ### 2.1 Descarga de PDFs
 
-- Lee `data/yyyymm/links.json`.  
+- Lee `docs/data/yyyymm/links.json`.  
 - Descarga cada PDF a:  
-  `data/yyyymm/pdfs/<civico>.pdf`.
+  `docs/data/yyyymm/pdfs/<civico>.pdf`.
 - Puede usar hash para evitar descargas duplicadas.
 
 ### 2.2 Extracción de actividades (RAW)
@@ -180,7 +172,7 @@ Cada PDF se procesa según su estructura concreta (Camelot, pdfplumber, heuríst
 **Resultado:**
 
 Para cada centro cívico:  
-`data/yyyymm/actividades_raw_<civico>.json`
+`docs/data/yyyymm/actividades_raw_<civico>.json`
 
 **Formato unificado (lista de textos de actividades):**
 
@@ -199,7 +191,7 @@ Para cada centro cívico:
 - Toma todas las listas RAW.  
 - Aplica el parser semántico.  
 - Genera un único archivo consolidado:  
-  `data/yyyymm/actividades.json`.
+  `docs/data/yyyymm/actividades.json`.
 
 **Características:**
 
@@ -313,7 +305,7 @@ Todos los tests unitarios están en `tests/` (sin scripts adicionales de verific
 
 La carpeta `web/` contiene una aplicación estática (**HTML + JS**) que:
 
-- Carga `data/yyyymm/actividades.json`.  
+- Carga `docs/data/yyyymm/actividades.json`.  
 - Muestra por defecto el último mes disponible.  
 - Permite:
   - Seleccionar meses anteriores  
@@ -327,7 +319,7 @@ La carpeta `web/` contiene una aplicación estática (**HTML + JS**) que:
 ## 🏛️ Datos fijos: centros cívicos
 
 Archivo mantenido manualmente:  
-`data/civicos.json`
+`docs/data/civicos.json`
 
 **Incluye:**
 

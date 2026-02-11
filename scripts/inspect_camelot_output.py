@@ -30,7 +30,7 @@ def inspect_civico_pdfs(month: str, civico_id: Optional[str] = None):
         month: Mes en formato YYYYMM (ej: 202601)
         civico_id: ID del cívico específico o None para todos
     """
-    pdfs_dir = Path(f"data/{month}/pdfs")
+    pdfs_dir = Path(f"docs/data/{month}/pdfs")
     
     if not pdfs_dir.exists():
         print(f"❌ Directorio no existe: {pdfs_dir}")

@@ -8,7 +8,7 @@ def get_warning_logger(month: str | int):
     logger.setLevel(logging.WARNING)
     logger.propagate = False
 
-    log_path = Path("data") / month_str / "warnings.log"
+    log_path = Path("docs/data") / month_str / "warnings.log"
     log_path.parent.mkdir(parents=True, exist_ok=True)
 
     handler = logging.FileHandler(log_path, encoding="utf-8")

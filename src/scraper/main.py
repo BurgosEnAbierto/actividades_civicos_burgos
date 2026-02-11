@@ -12,7 +12,7 @@ from src.utils.logging_config import setup_logging
 logger = logging.getLogger(__name__)
 
 BASE_URL = "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
-DATA_DIR = Path("data")
+DATA_DIR = Path("docs/data")
 
 
 def run_scraper() -> dict:

@@ -16,7 +16,7 @@ def generate_training_dataset():
     """Generar dataset de entrenamiento estructurado"""
     
     # Cargar datos
-    with open('data/202602/actividades.json', 'r', encoding='utf-8') as f:
+    with open('docs/data/202602/actividades.json', 'r', encoding='utf-8') as f:
         actividades_verified = json.load(f)
     
     civicos = [
@@ -26,7 +26,7 @@ def generate_training_dataset():
     
     raw_data = {}
     for civico in civicos:
-        raw_file = f'data/202602/actividades_raw_{civico}.json'
+        raw_file = f'docs/data/202602/actividades_raw_{civico}.json'
         with open(raw_file, 'r', encoding='utf-8') as f:
             raw_data[civico] = json.load(f)
     
@@ -119,7 +119,7 @@ def generate_training_dataset():
     }
     
     # Guardar
-    output_file = Path('data/202602/training_dataset_202602.json')
+    output_file = Path('docs/data/202602/training_dataset_202602.json')
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(dataset, f, ensure_ascii=False, indent=2)
     

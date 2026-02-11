@@ -13,14 +13,14 @@ class TestOrchestratorStructure:
 
     def test_actividades_json_exists(self):
         """Prueba que actividades.json existe después de orquestrador"""
-        activities_path = Path("data/202601/actividades.json")
+        activities_path = Path("docs/data/202601/actividades.json")
         assert activities_path.exists(), (
             f"No existe {activities_path}. Ejecuta: python src/orchestrator/main.py 202601"
         )
 
     def test_actividades_json_structure(self):
         """Prueba que actividades.json tiene estructura correcta"""
-        activities_path = Path("data/202601/actividades.json")
+        activities_path = Path("docs/data/202601/actividades.json")
         if not activities_path.exists():
             pytest.skip("actividades.json no existe")
 
@@ -47,7 +47,7 @@ class TestOrchestratorStructure:
         """Prueba que todas las actividades cumplen el schema"""
         from jsonschema import validate, ValidationError
 
-        activities_path = Path("data/202601/actividades.json")
+        activities_path = Path("docs/data/202601/actividades.json")
         if not activities_path.exists():
             pytest.skip("actividades.json no existe")
 
@@ -73,12 +73,12 @@ class TestIsNewFlag:
 
     def test_links_json_exists(self):
         """Prueba que links.json existe"""
-        links_path = Path("data/202601/links.json")
+        links_path = Path("docs/data/202601/links.json")
         assert links_path.exists()
 
     def test_is_new_flag_lifecycle(self):
         """Prueba que is_new flag tiene valores correctos"""
-        links_path = Path("data/202601/links.json")
+        links_path = Path("docs/data/202601/links.json")
         links_data = json.loads(links_path.read_text(encoding="utf-8"))
         links = links_data.get("links", [])
 
@@ -89,8 +89,8 @@ class TestIsNewFlag:
 
     def test_processed_links_are_marked_false(self):
         """Prueba que los links procesados están marcados como is_new=false"""
-        activities_path = Path("data/202601/actividades.json")
-        links_path = Path("data/202601/links.json")
+        activities_path = Path("docs/data/202601/actividades.json")
+        links_path = Path("docs/data/202601/links.json")
 
         if not activities_path.exists():
             pytest.skip("actividades.json no existe")
