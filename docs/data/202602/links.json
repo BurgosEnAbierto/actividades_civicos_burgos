@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "month": "202602",
+    "scraped_at": "2026-02-06T22:24:09.422370+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "rio_vena",
+      "title": "RIO VENA AGENDA FEBRERO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/RIO+VENA+AGENDA+FEBRERO+26+%281%29.pdf/11dc6007-21b7-6de9-23bd-4a49e9937e0d?t=1770024650689",
+      "filename": "11dc6007-21b7-6de9-23bd-4a49e9937e0d",
+      "is_new": false
+    },
+    {
+      "civico_id": "vista_alegre",
+      "title": "VISTA ALEGRE AGENDA FEBRERO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/VISTA+ALEGRE+AGENDA+FEBRERO+26+%281%29.pdf/2f48dbb3-ba13-e7e8-c346-fd15bc06a77b?t=1770024622301",
+      "filename": "2f48dbb3-ba13-e7e8-c346-fd15bc06a77b",
+      "is_new": false
+    },
+    {
+      "civico_id": "capiscol",
+      "title": "CAPISCOL AGENDA FEBRERO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/CAPISCOL+AGENDA+FEBRERO+26.pdf/eda15973-25e1-ebda-148f-6e8e0591810c?t=1769779777300",
+      "filename": "eda15973-25e1-ebda-148f-6e8e0591810c",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA FEBRERO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUSTIN+AGENDA+FEBRERO+26.pdf/5953bb69-3916-38af-9460-21ca484c5b61?t=1769779854234",
+      "filename": "5953bb69-3916-38af-9460-21ca484c5b61",
+      "is_new": false
+    },
+    {
+      "civico_id": "huelgas",
+      "title": "LAS HUELGAS AGENDA FEBRERO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/LAS+HUELGAS+AGENDA+FEBRERO+26.pdf/11924db5-70bc-6d53-7d37-2f168b142595?t=1769779815889",
+      "filename": "11924db5-70bc-6d53-7d37-2f168b142595",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA FEBRERO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+FEBRERO+26.pdf/2e181e92-06c2-4aa8-f326-3d3061b1a583?t=1769779874761",
+      "filename": "2e181e92-06c2-4aa8-f326-3d3061b1a583",
+      "is_new": false
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA FEBRERO 26",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+FEBRERO+26.pdf/e8353ea0-bc8b-fedb-8172-78303ef3b526?t=1770035502662",
+      "filename": "e8353ea0-bc8b-fedb-8172-78303ef3b526",
+      "is_new": false
+    }
+  ]
+}

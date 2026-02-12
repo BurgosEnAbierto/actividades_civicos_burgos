@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://burgos-civicos.es/schemas/actividades.schema.v1.json",
+  "title": "Actividades mensuales de los centros cívicos de Burgos",
+  "type": "object",
+  "additionalProperties": {
+    "type": "array",
+    "items": { "$ref": "#/$defs/actividad" }
+  },
+  "$defs": {
+    "actividad": {
+      "type": "object",
+      "required": [
+        "nombre",
+        "fecha",
+        "requiere_inscripcion",
+        "publico"
+      ],
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "minLength": 1
+        },
+        "descripcion": {
+          "type": ["string", "null"]
+        },
+        "fecha": {
+          "type": "string",
+          "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+        },
+        "fecha_fin": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+        },
+        "hora": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{2}:\\d{2}$"
+        },
+        "hora_fin": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{2}:\\d{2}$"
+        },
+        "requiere_inscripcion": {
+          "type": "boolean"
+        },
+        "lugar": {
+          "type": ["string", "null"]
+        },
+        "publico": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edad_minima": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "edad_maxima": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "precio": {
+          "type": ["number", "null"],
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
