@@ -1,0 +1,22 @@
+{
+  "name": "burgos-civicos-web",
+  "version": "1.0.0",
+  "description": "Web frontend para la agenda de actividades de centros cívicos de Burgos",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "server": "python3 -m http.server 8000 --directory ."
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.23.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

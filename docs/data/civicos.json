@@ -1,0 +1,44 @@
+{
+  "rio_vena": {
+    "nombre": "Centro Cívico Río Vena",
+    "direccion": "C/ Juan de Padilla, s/n, 09006 Burgos",
+    "telefono": "947 28 88 30",
+    "email": "centrocivicoriovena@aytoburgos.es"
+  },
+  "vista_alegre": {
+    "nombre": "Centro Cívico Vista Alegre",
+    "direccion": "C/ Victoria Balfé, s/n, 09006 Burgos",
+    "telefono": "947 28 88 59",
+    "email": "centrocivicovistaalegre@aytoburgos.es"
+  },
+  "capiscol": {
+    "nombre": "Centro Cívico Capiscol",
+    "direccion": "C/ Fundación Sonsoles Ballvé, 1, 09007 Burgos",
+    "telefono": "947 28 88 90",
+    "email": "centrocivicocapiscol@aytoburgos.es"
+  },
+  "san_agustin": {
+    "nombre": "Centro Cívico San Agustín",
+    "direccion": "Plaza San Agustín, s/n, 09001 Burgos",
+    "telefono": "947 28 88 94",
+    "email": "centrocivicosanagustin@aytoburgos.es"
+  },
+  "huelgas": {
+    "nombre": "Centro Cívico Huelgas - El Pilar",
+    "direccion": "C/ Gumiel de Izán, s/n, 09001 Burgos",
+    "telefono": "947 28 88 57",
+    "email": "centrocivicohuelgas@aytoburgos.es"
+  },
+  "gamonal_norte": {
+    "nombre": "Centro Cívico Gamonal Norte",
+    "direccion": "C/ José María Codón, 2, 09007 Burgos",
+    "telefono": "947 28 88 83",
+    "email": "centrocivicogamonalnorte@aytoburgos.es"
+  },
+  "san_juan": {
+    "nombre": "Centro Cívico San Juan",
+    "direccion": "C/ San Juan, nº2, 09004 Burgos",
+    "telefono": "947 28 88 19",
+    "email": "centrocivicosanjuan@aytoburgos.es"
+  }
+}
