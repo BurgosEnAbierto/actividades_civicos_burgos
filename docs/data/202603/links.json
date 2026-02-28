@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "month": "202603",
+    "scraped_at": "2026-02-27T22:36:25.630267+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "rio_vena",
+      "title": "RIO VENA AGENDA MARZO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/RIO+VENA+AGENDA+MARZO+26+.pdf/f190a335-bf22-ac81-3b8d-1828818172b7?t=1772191432065",
+      "filename": "f190a335-bf22-ac81-3b8d-1828818172b7",
+      "is_new": false
+    },
+    {
+      "civico_id": "vista_alegre",
+      "title": "VISTA ALEGRE AGENDA MARZO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/VISTA+ALEGRE+AGENDA+MARZO+26.pdf/1666790f-d7f0-93be-86b8-e155364eae01?t=1772191461653",
+      "filename": "1666790f-d7f0-93be-86b8-e155364eae01",
+      "is_new": false
+    },
+    {
+      "civico_id": "capiscol",
+      "title": "CAPISCOL AGENDA MARZO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/CAPISCOL+AGENDA+MARZO+26.pdf/1fb32011-1e4f-1ee7-5ebc-3554a2057020?t=1772191481430",
+      "filename": "1fb32011-1e4f-1ee7-5ebc-3554a2057020",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA MARZO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUST%C3%8DN+AGENDA+MARZO+26+.pdf/565f9be8-f57f-e6aa-a3f0-6a29f0b92969?t=1772191499089",
+      "filename": "565f9be8-f57f-e6aa-a3f0-6a29f0b92969",
+      "is_new": false
+    },
+    {
+      "civico_id": "huelgas",
+      "title": "LAS HUELGAS AGENDA MARZO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/HUELGAS+AGENDA+MARZO+26.pdf/54fd6389-fe2e-e4ab-d865-d0a4035db0ae?t=1772191520478",
+      "filename": "54fd6389-fe2e-e4ab-d865-d0a4035db0ae",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA MARZO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN++AGENDA+MARZO+26.pdf/4263b277-b3e4-a370-6c7f-bd395d64fae4?t=1772191540129",
+      "filename": "4263b277-b3e4-a370-6c7f-bd395d64fae4",
+      "is_new": false
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA MARZO 26",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+MARZO+26.pdf/2f320e88-827e-c954-b6a6-a8464ed79f68?t=1772191555885",
+      "filename": "2f320e88-827e-c954-b6a6-a8464ed79f68",
+      "is_new": false
+    }
+  ]
+}
