@@ -199,7 +199,7 @@ class App {
       this.allActivities,
       this.currentFilters
     );
-    uiRenderer.renderActivities(filtered, this.civicosMap, this.linksMap);
+    uiRenderer.renderActivities(filtered, this.civicosMap, this.linksMap, this.currentMonth);
   }
 
   /**

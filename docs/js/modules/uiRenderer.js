@@ -2,6 +2,8 @@
  * uiRenderer.js - Renderizado de elementos HTML
  */
 
+import * as feedbackHandler from './feedbackHandler.js';
+
 /**
  * Renderiza el selector de meses
  * @param {Array<string>} months - Array de meses en YYYYMM
@@ -57,8 +59,9 @@ export function renderFilters(civicos, civicosMap, todayDate) {
  * @param {Array} activities - Array de actividades a renderizar
  * @param {Object} civicosMap - Mapeo de ID -> datos civico
  * @param {Object} linksMap - Mapeo de civico_id -> URL del PDF
+ * @param {string} currentMonth - Mes en formato YYYYMM
  */
-export function renderActivities(activities, civicosMap, linksMap = {}) {
+export function renderActivities(activities, civicosMap, linksMap = {}, currentMonth = '') {
   const container = document.getElementById('activities');
   if (!container) return;
 
@@ -71,7 +74,7 @@ export function renderActivities(activities, civicosMap, linksMap = {}) {
   }
 
   activities.forEach(act => {
-    const activityElement = createActivityElement(act, civicosMap, linksMap);
+    const activityElement = createActivityElement(act, civicosMap, linksMap, currentMonth);
     container.appendChild(activityElement);
   });
 }
@@ -81,9 +84,10 @@ export function renderActivities(activities, civicosMap, linksMap = {}) {
  * @param {Object} act - Actividad
  * @param {Object} civicosMap - Mapeo de ID -> datos civico
  * @param {Object} linksMap - Mapeo de civico_id -> URL del PDF
+ * @param {string} currentMonth - Mes en formato YYYYMM
  * @returns {HTMLElement}
  */
-function createActivityElement(act, civicosMap, linksMap = {}) {
+function createActivityElement(act, civicosMap, linksMap = {}, currentMonth = '') {
   const div = document.createElement('div');
   div.className = 'activity';
 
@@ -108,7 +112,7 @@ function createActivityElement(act, civicosMap, linksMap = {}) {
 
   const detail = document.createElement('div');
   detail.className = 'activity-detail hidden';
-  detail.innerHTML = createActivityDetailHTML(act, pdfUrl, civicPhone, civicName);
+  detail.innerHTML = createActivityDetailHTML(act, pdfUrl, civicPhone, civicName, currentMonth);
 
   div.appendChild(summary);
   div.appendChild(detail);
@@ -128,9 +132,10 @@ function createActivityElement(act, civicosMap, linksMap = {}) {
  * @param {string} pdfUrl - URL del PDF de la actividad
  * @param {string} civicPhone - Teléfono del cívico
  * @param {string} civicName - Nombre del cívico
+ * @param {string} currentMonth - Mes en formato YYYYMM
  * @returns {string} HTML del detalle
  */
-function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName) {
+function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName, currentMonth = '') {
   const items = [];
 
   if (act.descripcion) {
@@ -230,6 +235,14 @@ function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName) {
       </div>
     `;
   }
+
+  // Agregar botón "Reportar problema"
+  const mailtoUrl = feedbackHandler.generateActivityReportMailto(act, civicName, currentMonth);
+  detailHTML += `
+    <a href="${escapeHtml(mailtoUrl)}" class="action-link report-link" title="Reportar un problema en esta actividad">
+      ⚠️ Reportar problema
+    </a>
+  `;
 
   detailHTML += '</div>';
 
