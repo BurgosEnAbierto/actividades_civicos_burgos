@@ -6,6 +6,7 @@ import * as dataLoader from './dataLoader.js';
 import * as dateUtils from './dateUtils.js';
 import * as filterEngine from './filterEngine.js';
 import * as uiRenderer from './uiRenderer.js';
+import * as versionLoader from './versionLoader.js';
 
 class App {
   constructor() {
@@ -35,10 +36,11 @@ class App {
    */
   async init() {
     try {
-      // Cargar civicos y meses disponibles en paralelo
+      // Cargar civicos, meses disponibles y versión en paralelo
       await Promise.all([
         this.loadCivicos(),
-        this.loadAvailableMonths()
+        this.loadAvailableMonths(),
+        this.loadAndDisplayVersion()
       ]);
 
       if (this.availableMonths.length === 0) {
@@ -73,6 +75,14 @@ class App {
    */
   async loadAvailableMonths() {
     this.availableMonths = await dataLoader.getAvailableMonths();
+  }
+
+  /**
+   * Carga y muestra la versión del proyecto
+   */
+  async loadAndDisplayVersion() {
+    const version = await versionLoader.loadVersion();
+    versionLoader.updateFooterVersion(version);
   }
 
   /**
