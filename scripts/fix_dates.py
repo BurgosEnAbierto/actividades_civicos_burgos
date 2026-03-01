@@ -80,7 +80,7 @@ def fix_dates(month: str, dry_run: bool = True):
     
     if dry_run:
         print(f"Se corregirían {fixed_count} fechas")
-        print("Ejecutar con --apply para confirmar")
+        print("Ejecutar con --apply para confirmar y ordenar por fecha")
         return 0 if fixed_count == 0 else 1
     else:
         # Guardar el archivo corregido

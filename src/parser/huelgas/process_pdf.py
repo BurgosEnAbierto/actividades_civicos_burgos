@@ -24,19 +24,29 @@ def process_pdf_huelgas(pdf_path):
 
         for row in data:
             if len(row) < 6:
-                continue
+                dia = row[0].strip()
+                texto = row[1].replace("\n", "").strip()
 
-            dia = row[0].strip()
-            texto = row[1].replace("\n", "").strip()
+                if dia:
+                    rows.append([dia, texto])
 
-            if dia:
-                rows.append([dia, texto])
+                dia = row[2].strip()
+                texto = row[3].replace("\n", "").strip()
 
-            dia = row[3].strip()
-            texto = row[4].replace("\n", "").strip()
+                if dia:
+                    rows.append([dia, texto])
+            elif len(row) == 6:
+                dia = row[0].strip()
+                texto = row[1].replace("\n", "").strip()
 
-            if dia:
-                rows.append([dia, texto])
+                if dia:
+                    rows.append([dia, texto])
+
+                dia = row[3].strip()
+                texto = row[4].replace("\n", "").strip()
+
+                if dia:
+                    rows.append([dia, texto])
             
 
     logger.debug("Filas raw extraídas: %d", len(rows))
