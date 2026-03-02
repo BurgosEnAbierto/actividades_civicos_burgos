@@ -7,6 +7,7 @@ import * as dateUtils from './dateUtils.js';
 import * as filterEngine from './filterEngine.js';
 import * as uiRenderer from './uiRenderer.js';
 import * as versionLoader from './versionLoader.js';
+import * as shareHandler from './shareHandler.js';
 
 class App {
   constructor() {
@@ -32,6 +33,18 @@ class App {
   }
 
   /**
+   * Obtiene los parámetros de URL (month, activity)
+   * @returns {Object} {month, activity}
+   */
+  getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      month: params.get('month'),
+      activity: params.get('activity')
+    };
+  }
+
+  /**
    * Inicializa la aplicación
    */
   async init() {
@@ -48,8 +61,15 @@ class App {
         return;
       }
 
-      // Cargar mes más reciente por defecto
-      this.currentMonth = this.availableMonths[0];
+      // Obtener parámetros de URL
+      const urlParams = this.getUrlParams();
+      
+      // Si hay un mes en la URL, usarlo; si no, usar el más reciente
+      if (urlParams.month && this.availableMonths.includes(urlParams.month)) {
+        this.currentMonth = urlParams.month;
+      } else {
+        this.currentMonth = this.availableMonths[0];
+      }
 
       // Cargar datos del mes actual
       await this.loadCurrentMonth();
@@ -57,10 +77,38 @@ class App {
       // Inicializar interfaz
       this.setupUI();
       this.applyFilters();
+
+      // Si hay una actividad en la URL, expandirla después de renderizar
+      if (urlParams.activity) {
+        this.expandActivityFromUrl(urlParams.activity);
+      }
     } catch (err) {
       console.error('Error inicializando aplicación:', err);
       this.showErrorMessage('Error al cargar la aplicación');
     }
+  }
+
+  /**
+   * Expande una actividad específica basada en su ID desde la URL
+   * @param {string} activityId - ID de la actividad
+   */
+  expandActivityFromUrl(activityId) {
+    // Esperar un pequeño delay para asegurar que el DOM esté actualizado
+    setTimeout(() => {
+      const element = document.getElementById(activityId);
+      if (element) {
+        // Hacer scroll al elemento
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Expandir la actividad
+        const summary = element.querySelector('.activity-summary');
+        const detail = element.querySelector('.activity-detail');
+        if (summary && detail) {
+          element.classList.add('expanded');
+          detail.classList.remove('hidden');
+        }
+      }
+    }, 100);
   }
 
   /**
@@ -136,6 +184,36 @@ class App {
     }
     if (filterInscripcion) {
       filterInscripcion.addEventListener('change', e => this.onFilterChange(e));
+    }
+
+    // Configurar botones de compartir en el header
+    this.setupHeaderShareButtons();
+  }
+
+  /**
+   * Configura los botones de compartir en el header
+   */
+  setupHeaderShareButtons() {
+    const shareUrl = shareHandler.generateWebShareUrl();
+    const shareTitle = 'Agenda de actividades de Centros Cívicos de Burgos';
+    const shareText = 'Consulta la agenda de actividades de los Centros Cívicos de Burgos';
+
+    const shareButtons = {
+      'shareWhatsapp': 'whatsapp',
+      'shareTwitter': 'twitter',
+      'shareFacebook': 'facebook',
+      'shareEmail': 'email',
+      'shareCopy': 'copy'
+    };
+
+    for (const [buttonId, platform] of Object.entries(shareButtons)) {
+      const button = document.getElementById(buttonId);
+      if (button) {
+        button.addEventListener('click', async (e) => {
+          e.preventDefault();
+          await shareHandler.handleShareClick(platform, shareUrl, shareTitle, shareText);
+        });
+      }
     }
   }
 
