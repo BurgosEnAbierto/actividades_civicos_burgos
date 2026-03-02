@@ -66,11 +66,19 @@ header h1 {
   line-height: 1.2;
 }
 
-.header-disclaimer {
+.header-actions {
   text-align: right;
 }
 
-.header-disclaimer a {
+.header-links {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.header-links a {
   font-size: 12px;
   color: #ff8200;
   text-decoration: none;
@@ -78,9 +86,32 @@ header h1 {
   border-bottom: 1px dashed #ff8200;
 }
 
-.header-disclaimer a:hover {
+.header-links a:hover {
   color: #a00000;
   border-bottom-color: #a00000;
+}
+
+.header-share-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.header-share-button {
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.header-share-button:hover {
+  background: #f5f5f5;
+  border-color: #a00000;
+  transform: scale(1.1);
 }
 
 .container {
@@ -271,6 +302,31 @@ header h1 {
 .report-link:hover {
   background: #800000;
   text-decoration: underline;
+}
+
+.activity-share-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.share-button {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.share-button:hover {
+  background: #f5f5f5;
+  border-color: #a00000;
+  transform: scale(1.1);
 }
 
 .phone-number {
