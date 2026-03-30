@@ -43,10 +43,10 @@ def test_orchestrator_basic(tmp_path):
     """
     Test de integración ligera:
     - Ejecuta el orquestador para un mes
-    - Comprueba estructura
-    - Valida contra el schema final
+    - Comprueba estructura de resultado
+    - Valida que procesa civicos correctamente
     """
-    month = "2025-12"
+    month = "202512"
 
     data_dir = tmp_path / month
     data_dir.mkdir(parents=True)
@@ -72,14 +72,19 @@ def test_orchestrator_basic(tmp_path):
         json.dumps(links), encoding="utf-8"
     )
 
-    activities = run_orchestrator(
+    result = run_orchestrator(
         month,
         base_data_path=tmp_path,
         download_fn=fake_download,
         parsers=fake_parsers,
     )
 
-    assert "gamonal_norte" in activities
-    assert isinstance(activities["gamonal_norte"], list)
-    assert len(activities["gamonal_norte"]) == 1
+    # Verificar estructura de resultado
+    assert result["success"] is True
+    assert result["month"] == "202512"
+    assert result["civicos_processed"] == 1
+    assert result["civicos_with_errors"] == 0
+    assert result["total_activities"] == 1
+    assert isinstance(result["errors"], list)
+    assert len(result["errors"]) == 0
 

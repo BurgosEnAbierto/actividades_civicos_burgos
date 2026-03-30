@@ -25,6 +25,7 @@ En resumen, **pone a disposición de todos los burgaleses una agenda verdaderame
   - [🤖 2.4 Parser con IA](#-24-parser-con-ia-ollama--mistral)
   - [🧪 2.5 Testing](#-testing)
   - [🌐 3. Web](#-3-web)
+  - [⚙️ Task Wrapper](#️-task-wrapper--ejecución-automática-desde-cron)
   - [🏛️ Datos fijos: centros cívicos](#️-datos-fijos-centros-cívicos)
 
 ---
@@ -313,6 +314,126 @@ La carpeta `web/` contiene una aplicación estática (**HTML + JS**) que:
   - Ver detalle completo de una actividad  
 
 > Este bloque no depende de Python.
+
+---
+
+## ⚙️ Task Wrapper – Ejecución automática desde Cron
+
+El **task wrapper** (`src/task_wrapper/main.py`) es un orquestador que ejecuta secuencialmente:
+
+1. **Scraper** → detecta el mes y nuevos PDFs
+2. **Orchestrator** → solo si hay PDFs nuevos, procesa ese mes
+3. Envía notificaciones (Discord/Email) con resultados
+
+### Instalación rápida
+
+```bash
+# 1. Instala dependencias (python-dotenv es necesario)
+pip install -r requirements.txt
+
+# 2. Copia y personaliza .env
+cp .env.example .env
+# Edita .env con tus rutas y notificadores
+```
+
+### Ubicación del .env
+
+El archivo `.env` debe estar en el **workspace root** (un nivel por encima que `run_cron.sh`):
+
+```
+/home/kowagunga/workspaces/BurgosEnAbierto/actividades_civicos_burgos/
+├── .env                    ← AQUÍ
+├── scripts
+    └── run_cron.sh
+├── src/
+├── docs/
+└── ...
+```
+
+Cuando ejecutas:
+```bash
+python3 -m src.task_wrapper --config .env
+```
+
+Busca el archivo `.env` en la ruta que pases. Si no lo pasas, intenta en `CWD/.env`.
+
+### Uso
+
+**Manual (prueba):**
+```bash
+python3 -m src.task_wrapper --config .env
+python3 -m src.task_wrapper --config .env --force-orchestrator  # Ejecuta incluso sin nuevos PDFs
+python3 -m src.task_wrapper --config .env --no-notify          # Sin notificaciones
+```
+
+**Desde cron (automático cada noche):**
+```bash
+# Hacer script ejecutable
+chmod +x scripts/run_cron.sh
+
+# Agregar a crontab
+crontab -e
+# Agregar línea (ej: 2 AM cada día):
+# 0 2 * * * /home/kowagunga/workspaces/BurgosEnAbierto/actividades_civicos_burgos/scripts/run_cron.sh
+```
+
+El script `scripts/run_cron.sh` busca `.env` en el workspace root (directorio padre de `/scripts`).
+
+### Configuración de notificaciones
+
+**Discord** (recomendado):
+1. Crea un webhook en tu servidor de Discord
+2. Copia la URL en `.env`: `DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...`
+
+**Email SMTP** (opcional):
+```ini
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=tu@gmail.com
+SMTP_PASSWORD=app_password_generada_en_google
+SMTP_FROM=tu@gmail.com
+SMTP_TO=destino@email.com
+```
+
+Para Gmail:
+1. Activa 2-Step Verification
+2. Genera "App Password" en https://myaccount.google.com/apppasswords
+3. Copia valores en `.env`
+
+**Sin notificaciones:**
+Deja los campos vacíos. El wrapper funcionará igual y guardará logs locales en `logs/`.
+
+### Datos devueltos por Scraper y Orchestrator
+
+El task wrapper usa datos estructurados devueltos por cada módulo:
+
+**Scraper:**
+```python
+{
+    "success": bool,
+    "month": "202601",
+    "total_links_found": 12,
+    "new_links_count": 3,
+    "new_links": [...],
+    "links_file": Path,
+    "error": str | None,
+}
+```
+
+**Orchestrator:**
+```python
+{
+    "success": bool,
+    "month": "202601",
+    "civicos_processed": 3,
+    "civicos_with_errors": 0,
+    "total_activities": 145,
+    "errors": [...],
+    "activities_file": Path,
+}
+```
+
+Esto evita parsear logs y garantiza una comunicación limpia entre módulos.
 
 ---
 
