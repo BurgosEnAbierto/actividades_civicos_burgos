@@ -4,6 +4,7 @@
 
 /**
  * Obtiene los meses disponibles en /data/
+ * Prioridad: mes actual, mes siguiente (si existe), mes anterior (si existe)
  * @returns {Promise<string[]>} Array de meses en formato YYYYMM ordenados descendentemente
  */
 export async function getAvailableMonths() {
@@ -12,24 +13,55 @@ export async function getAvailableMonths() {
   const currentYear = currentDate.getFullYear();
   const currentMonthNum = currentDate.getMonth() + 1;
 
-  // Buscar meses de los últimos 6 meses
-  for (let i = 0; i < 6; i++) {
-    let d = new Date(currentYear, currentMonthNum - 1 - i, 1);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
+  // Calcular los meses a buscar: anterior, actual, siguiente
+  const monthsToCheck = [
+    // Mes anterior
+    {
+      date: new Date(currentYear, currentMonthNum - 2, 1),
+      order: 3
+    },
+    // Mes actual
+    {
+      date: new Date(currentYear, currentMonthNum - 1, 1),
+      order: 1
+    },
+    // Mes siguiente
+    {
+      date: new Date(currentYear, currentMonthNum, 1),
+      order: 2
+    }
+  ];
+
+  const monthsData = [];
+
+  // Buscar datos para cada mes
+  for (const entry of monthsToCheck) {
+    const year = entry.date.getFullYear();
+    const month = String(entry.date.getMonth() + 1).padStart(2, '0');
     const monthStr = `${year}${month}`;
 
     try {
       const response = await fetch(`data/${monthStr}/actividades.json`);
       if (response.ok) {
-        months.push(monthStr);
+        monthsData.push({
+          monthStr,
+          order: entry.order
+        });
       }
     } catch (err) {
       // Silenciosamente ignorar errores de fetch
     }
   }
 
-  return months.sort().reverse();
+  // Ordenar por prioridad (actual, siguiente, anterior) y luego descendentemente
+  monthsData.sort((a, b) => {
+    if (a.order !== b.order) {
+      return a.order - b.order;
+    }
+    return b.monthStr.localeCompare(a.monthStr);
+  });
+
+  return monthsData.map(entry => entry.monthStr);
 }
 
 /**

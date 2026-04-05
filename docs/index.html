@@ -18,8 +18,17 @@
       </div>
       <div class="header-content">
         <h1>Agenda de actividades - Centros Cívicos de Burgos</h1>
-        <div class="header-disclaimer">
-          <a href="#disclaimer">Disclaimer: Por qué esta web no debería existir</a>
+        <div class="header-actions">
+          <div class="header-links">
+            <a href="#disclaimer">Disclaimer: Por qué esta web no debería existir</a> | 
+            <a href="#feedback">Feedback: Ayuda a mejorar</a> | 
+            <span class="header-share-label">Compartir:</span>
+            <button class="header-share-button" id="shareWhatsapp" title="Compartir por WhatsApp">💬</button>
+            <button class="header-share-button" id="shareTwitter" title="Compartir en Twitter">𝕏</button>
+            <button class="header-share-button" id="shareFacebook" title="Compartir en Facebook">📘</button>
+            <button class="header-share-button" id="shareEmail" title="Compartir por email">✉️</button>
+            <button class="header-share-button" id="shareCopy" title="Copiar enlace">📋</button>
+          </div>
         </div>
       </div>
     </div>
@@ -83,11 +92,40 @@
       </p>
     </div>
 
+    <!-- Feedback Section -->
+    <div id="feedback" class="feedback-section">
+      <h2>¿Tienes feedback o has encontrado un error?</h2>
+      <p>
+        Este proyecto es <strong>código abierto y colaborativo</strong>. Si encuentras un error en los datos, una actividad que no se muestra correctamente, o tienes una sugerencia para mejorar la web, <strong>tu feedback es valioso</strong>.
+      </p>
+      <p>
+        Puedes contactar de varias formas:
+      </p>
+      <ul>
+        <li>
+          <strong>Reportar un error en una actividad específica:</strong> Usa el botón "Reportar problema" en la actividad. Te ayudará a enviar un email directamente con toda la información relevante.
+        </li>
+        <li>
+          <strong>Reportar un bug o hacer una sugerencia:</strong> 
+          <a href="https://github.com/BurgosEnAbierto/actividades_civicos_burgos/issues" target="_blank" rel="noopener noreferrer">Abre un issue en GitHub</a>
+          - es gratis, rápido y público, así otros usuarios pueden ver y comentar.
+        </li>
+        <li>
+          <strong>Contactar por email:</strong> Envía un email a 
+          <a href="mailto:burgosenabierto@proton.me?subject=Feedback%20actividades_civicos_burgos" target="_blank">
+            burgosenabierto@proton.me</a>.
+        </li>
+      </ul>
+      <p>
+        <strong>¡Gracias por contribuir a mejorar esta herramienta!</strong>
+      </p>
+    </div>
+
     <!-- Footer -->
     <div class="footer">
       <p>
         <a href="https://github.com/BurgosEnAbierto" target="_blank">Burgos en Abierto</a>: 
-        Proyecto Agenda de Actividades - Cívicos Burgos. V0.9.0 | 
+        Proyecto Agenda de Actividades - Cívicos Burgos. <span class="version">Cargando versión...</span> | 
         <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU GENERAL PUBLIC LICENSE</a>
       </p>
     </div>

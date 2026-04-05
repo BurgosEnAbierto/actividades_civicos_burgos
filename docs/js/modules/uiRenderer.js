@@ -2,6 +2,9 @@
  * uiRenderer.js - Renderizado de elementos HTML
  */
 
+import * as feedbackHandler from './feedbackHandler.js';
+import * as shareHandler from './shareHandler.js';
+
 /**
  * Renderiza el selector de meses
  * @param {Array<string>} months - Array de meses en YYYYMM
@@ -57,8 +60,9 @@ export function renderFilters(civicos, civicosMap, todayDate) {
  * @param {Array} activities - Array de actividades a renderizar
  * @param {Object} civicosMap - Mapeo de ID -> datos civico
  * @param {Object} linksMap - Mapeo de civico_id -> URL del PDF
+ * @param {string} currentMonth - Mes en formato YYYYMM
  */
-export function renderActivities(activities, civicosMap, linksMap = {}) {
+export function renderActivities(activities, civicosMap, linksMap = {}, currentMonth = '') {
   const container = document.getElementById('activities');
   if (!container) return;
 
@@ -70,9 +74,31 @@ export function renderActivities(activities, civicosMap, linksMap = {}) {
     return;
   }
 
-  activities.forEach(act => {
-    const activityElement = createActivityElement(act, civicosMap, linksMap);
+  activities.forEach((act, index) => {
+    const activityElement = createActivityElement(act, civicosMap, linksMap, currentMonth, index);
     container.appendChild(activityElement);
+  });
+
+  // Agregar event listeners a los botones de compartir
+  setupShareButtonListeners(container);
+}
+
+/**
+ * Configura los event listeners para los botones de compartir
+ * @param {HTMLElement} container - Contenedor que tiene los botones
+ */
+function setupShareButtonListeners(container) {
+  const shareButtons = container.querySelectorAll('.share-button');
+  shareButtons.forEach(button => {
+    button.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const platform = button.dataset.platform;
+      const url = button.dataset.url;
+      const title = button.dataset.title;
+      const text = button.dataset.text;
+      
+      await shareHandler.handleShareClick(platform, url, title, text);
+    });
   });
 }
 
@@ -81,11 +107,15 @@ export function renderActivities(activities, civicosMap, linksMap = {}) {
  * @param {Object} act - Actividad
  * @param {Object} civicosMap - Mapeo de ID -> datos civico
  * @param {Object} linksMap - Mapeo de civico_id -> URL del PDF
+ * @param {string} currentMonth - Mes en formato YYYYMM
+ * @param {number} index - Índice de la actividad en la lista
  * @returns {HTMLElement}
  */
-function createActivityElement(act, civicosMap, linksMap = {}) {
+function createActivityElement(act, civicosMap, linksMap = {}, currentMonth = '', index = 0) {
   const div = document.createElement('div');
   div.className = 'activity';
+  const activityId = shareHandler.generateActivityId(act, index);
+  div.id = activityId;
 
   const civicName = civicosMap[act.civico]?.nombre || act.civico;
   const civicPhone = civicosMap[act.civico]?.telefono;
@@ -108,7 +138,7 @@ function createActivityElement(act, civicosMap, linksMap = {}) {
 
   const detail = document.createElement('div');
   detail.className = 'activity-detail hidden';
-  detail.innerHTML = createActivityDetailHTML(act, pdfUrl, civicPhone, civicName);
+  detail.innerHTML = createActivityDetailHTML(act, pdfUrl, civicPhone, civicName, currentMonth, index);
 
   div.appendChild(summary);
   div.appendChild(detail);
@@ -128,9 +158,11 @@ function createActivityElement(act, civicosMap, linksMap = {}) {
  * @param {string} pdfUrl - URL del PDF de la actividad
  * @param {string} civicPhone - Teléfono del cívico
  * @param {string} civicName - Nombre del cívico
+ * @param {string} currentMonth - Mes en formato YYYYMM
+ * @param {number} index - Índice de la actividad en la lista
  * @returns {string} HTML del detalle
  */
-function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName) {
+function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName, currentMonth = '', index = 0) {
   const items = [];
 
   if (act.descripcion) {
@@ -230,6 +262,39 @@ function createActivityDetailHTML(act, pdfUrl, civicPhone, civicName) {
       </div>
     `;
   }
+
+  // Agregar botón "Reportar problema"
+  const mailtoUrl = feedbackHandler.generateActivityReportMailto(act, civicName, currentMonth);
+  detailHTML += `
+    <a href="${escapeHtml(mailtoUrl)}" class="action-link report-link" title="Reportar un problema en esta actividad">
+      ⚠️ Reportar problema
+    </a>
+  `;
+
+  // Agregar sección de compartir
+  const shareUrl = shareHandler.generateActivityShareUrl(act, currentMonth, index);
+  const shareTitle = `${act.nombre} - Centros Cívicos de Burgos`;
+  const shareText = `Mira esta actividad en la agenda de actividades de Centros Cívicos de Burgos:`;
+  
+  detailHTML += '<div class="activity-share-buttons">';
+  detailHTML += `
+    <button class="share-button share-whatsapp" title="Compartir por WhatsApp" data-platform="whatsapp" data-url="${escapeHtml(shareUrl)}" data-title="${escapeHtml(shareTitle)}" data-text="${escapeHtml(shareText)}">
+      💬
+    </button>
+    <button class="share-button share-twitter" title="Compartir en Twitter" data-platform="twitter" data-url="${escapeHtml(shareUrl)}" data-title="${escapeHtml(shareTitle)}" data-text="${escapeHtml(shareText)}">
+      𝕏
+    </button>
+    <button class="share-button share-facebook" title="Compartir en Facebook" data-platform="facebook" data-url="${escapeHtml(shareUrl)}" data-title="${escapeHtml(shareTitle)}" data-text="${escapeHtml(shareText)}">
+      📘
+    </button>
+    <button class="share-button share-email" title="Compartir por email" data-platform="email" data-url="${escapeHtml(shareUrl)}" data-title="${escapeHtml(shareTitle)}" data-text="${escapeHtml(shareText)}">
+      ✉️
+    </button>
+    <button class="share-button share-copy" title="Copiar enlace" data-platform="copy" data-url="${escapeHtml(shareUrl)}" data-title="${escapeHtml(shareTitle)}" data-text="${escapeHtml(shareText)}">
+      📋
+    </button>
+  `;
+  detailHTML += '</div>';
 
   detailHTML += '</div>';
 

@@ -163,6 +163,16 @@ def run_orchestrator(
             except Exception as e:
                 logger.error(f"  ✗ Error de validación para {civico_id}: {e}")
                 errors.append((civico_id, f"Schema: {e}"))
+                # Guardar las actividades inválidas en un archivo separado para debugging
+                invalid_path = month_dir / f"actividades_invalid_{civico_id}.json"
+                try:
+                    invalid_path.write_text(
+                        json.dumps(civico_data, ensure_ascii=False, indent=2),
+                        encoding="utf-8"
+                    )
+                    logger.info(f"  ✓ Guardado actividades inválidas en {invalid_path}")
+                except Exception as e2:
+                    logger.warning(f"  ⚠ No se pudo guardar actividades inválidas: {e2}")
                 # Remover las actividades inválidas
                 del all_activities[civico_id]
                 continue
