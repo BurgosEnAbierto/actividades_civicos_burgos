@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "month": "202604",
+    "scraped_at": "2026-04-05T00:00:04.996527+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "rio_vena",
+      "title": "RIO VENA AGENDA ABRIL 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/RIO+VENA+AGENDA+ABRIL26.pdf/49eabb68-0a47-fcc2-26b0-73f66a45c387?t=1775030498872",
+      "filename": "49eabb68-0a47-fcc2-26b0-73f66a45c387",
+      "is_new": false
+    },
+    {
+      "civico_id": "vista_alegre",
+      "title": "VISTA ALEGRE AGENDA ABRIL 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/VISTA+ALEGRE+AGENDA+ABRIL26.pdf/3b40fc8f-eb17-3167-5636-f15cb9855465?t=1775030526805",
+      "filename": "3b40fc8f-eb17-3167-5636-f15cb9855465",
+      "is_new": false
+    },
+    {
+      "civico_id": "capiscol",
+      "title": "CAPISCOL AGENDA ABRIL 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/CAPISCOL+AGENDA+ABRIL26.pdf/6a8f7a96-2554-dcad-486a-f54babfef42c?t=1775030547145",
+      "filename": "6a8f7a96-2554-dcad-486a-f54babfef42c",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA ABRIL 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUSTIN+AGENDA+ABRIL26+.pdf/5b6cf2cb-2067-dcaf-c035-ddcbc18addf4?t=1775030568140",
+      "filename": "5b6cf2cb-2067-dcaf-c035-ddcbc18addf4",
+      "is_new": false
+    },
+    {
+      "civico_id": "huelgas",
+      "title": "LAS HUELGAS AGENDA ABRIL 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/LAS+HUELGAS+AGENDA+ABRIL26.pdf/086c719d-d8e4-887e-4c5d-1240233bb967?t=1775030591253",
+      "filename": "086c719d-d8e4-887e-4c5d-1240233bb967",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA ABRIL 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+ABRIL26.pdf/5da0d55a-79de-7b9e-85bf-1c3a2a87b1f9?t=1775030611983",
+      "filename": "5da0d55a-79de-7b9e-85bf-1c3a2a87b1f9",
+      "is_new": false
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA ABRIL 26",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+ABRIL26.pdf/1b017ee7-ca0b-e24b-540b-1b96d73eca14?t=1775030631989",
+      "filename": "1b017ee7-ca0b-e24b-540b-1b96d73eca14",
+      "is_new": false
+    }
+  ]
+}
