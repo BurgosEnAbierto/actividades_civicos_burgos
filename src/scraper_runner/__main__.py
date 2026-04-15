@@ -1,0 +1,5 @@
+"""Entrada para ejecutar src.scraper_runner como módulo"""
+from .main import main
+
+if __name__ == "__main__":
+    main()

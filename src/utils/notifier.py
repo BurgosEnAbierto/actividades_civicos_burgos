@@ -119,6 +119,27 @@ def send_email_notification(
         logger.error(f"✗ Error enviando email: {e}")
         return False
 
+def notify_task_started(
+    discord_webhook: Optional[str] = None,
+) -> bool:
+    """
+    Envía notificación de inicio de tarea a Discord (si está habilitado)
+    
+    Args:
+        discord_webhook: URL del webhook de Discord
+    
+    Returns:
+        True si se envió correctamente (o está deshabilitado)
+    """
+    if not discord_webhook:
+        return False
+    
+    return send_discord_notification(
+        webhook_url=discord_webhook,
+        title="🚀 Actividades Cívicos Burgos - Iniciando tarea",
+        message="Iniciando scraper + Orchestrator...",
+        status="info"
+    )
 
 def notify(
     title: str,

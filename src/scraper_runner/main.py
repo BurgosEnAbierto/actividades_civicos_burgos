@@ -1,15 +1,14 @@
 """
-Task wrapper para ejecutar scraper + orchestrator
+Scraper Runner - Ejecuta SOLO scraper y notifica si hay enlaces nuevos
 
 Flujo:
-  1. Ejecuta scraper -> obtiene mes y si hay enlaces nuevos
-  2. Si hay enlaces nuevos -> ejecuta orchestrator para ese mes
-  3. Devuelve resultados estructurados
-  4. Si está configurado, notifica resultados
+  1. Ejecuta scraper
+  2. Si hay enlaces nuevos (new_links_count > 0) -> envía notificación
+  3. Si no hay enlaces nuevos -> no hace nada (ejecución silenciosa)
 
 Uso:
-  python -m src.task_wrapper --config .env
-  python -m src.task_wrapper --help
+  python -m src.scraper_runner --config .env
+  python -m src.scraper_runner --help
 """
 import sys
 import os
@@ -20,9 +19,8 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from src.scraper.main import run_scraper
-from src.orchestrator.main import run_orchestrator
 from src.utils.logging_config import setup_logging
-from src.utils.notifier import notify, notify_task_started
+from src.utils.notifier import notify
 
 logger = logging.getLogger(__name__)
 
@@ -61,29 +59,23 @@ def load_config(config_path: Optional[str] = None) -> dict:
     return config
 
 
-def run_wrapper(config: dict, run_orchestrator_if_no_new: bool = False) -> dict:
+def run_scraper_only(config: dict) -> dict:
     """
-    Ejecuta scraper + orchestrator y devuelve resultados consolidados
+    Ejecuta scraper y devuelve resultados
     
     Args:
         config: Configuración cargada
-        run_orchestrator_if_no_new: Si True, ejecuta orchestrator incluso sin enlaces nuevos
     
     Returns:
-        Diccionario con resultados consolidados
+        Diccionario con resultados del scraper
     """
     logger.info("=" * 60)
-    logger.info("🚀 Iniciando task wrapper")
+    logger.info("🚀 Iniciando Scraper Runner (SOLO SCRAPER)")
     logger.info("=" * 60)
-    
-    # Notificar inicio si Discord está habilitado
-    if config.get("discord_webhook"):
-        notify_task_started(discord_webhook=config["discord_webhook"])
     
     result = {
         "success": False,
         "scraper": None,
-        "orchestrator": None,
         "errors": [],
     }
     
@@ -104,7 +96,6 @@ def run_wrapper(config: dict, run_orchestrator_if_no_new: bool = False) -> dict:
         else:
             logger.error(f"✗ Error en scraper: {scraper_result['error']}")
             result["errors"].append(f"Scraper: {scraper_result['error']}")
-            # Devolver resultado parcial
             return result
     
     except Exception as e:
@@ -112,49 +103,14 @@ def run_wrapper(config: dict, run_orchestrator_if_no_new: bool = False) -> dict:
         result["errors"].append(f"Scraper (excepción): {e}")
         return result
     
-    # --- ORCHESTRATOR (si hay enlaces nuevos) ---
-    if scraper_result["new_links_count"] > 0 or run_orchestrator_if_no_new:
-        logger.info(f"\n⚙️  Ejecutando ORCHESTRATOR para {scraper_result['month']}...")
-        
-        try:
-            orchestra_result = run_orchestrator(
-                month=scraper_result["month"],
-                base_data_path=config["data_dir"],
-            )
-            result["orchestrator"] = orchestra_result
-            
-            if orchestra_result["success"]:
-                logger.info(f"✓ Orchestrator completado")
-                logger.info(
-                    f"  Civicos: {orchestra_result['civicos_processed']}, "
-                    f"Actividades: {orchestra_result['total_activities']}, "
-                    f"Errores: {orchestra_result['civicos_with_errors']}"
-                )
-            else:
-                logger.warning(f"⚠ Orchestrator con problemas")
-                if orchestra_result.get("errors"):
-                    result["errors"].extend([e for e in orchestra_result["errors"]])
-        
-        except Exception as e:
-            logger.error(f"✗ Excepción en orchestrator: {e}")
-            result["errors"].append(f"Orchestrator (excepción): {e}")
-    
-    else:
-        logger.info("ℹ No hay enlaces nuevos, omitiendo orchestrator")
-    
     # --- RESULTADO FINAL ---
     result["success"] = len(result["errors"]) == 0
-    scraper_ok = result["scraper"] and result["scraper"]["success"]
-    orchestrator_ok = (
-        result["orchestrator"] is None or result["orchestrator"]["success"]
-    )
-    result["success"] = scraper_ok and orchestrator_ok
     
     logger.info("\n" + "=" * 60)
     if result["success"]:
-        logger.info("✅ Task wrapper completado exitosamente")
+        logger.info("✅ Scraper Runner completado exitosamente")
     else:
-        logger.error(f"❌ Task wrapper con errores ({len(result['errors'])})")
+        logger.error(f"❌ Scraper Runner con errores ({len(result['errors'])})")
         for err in result["errors"]:
             logger.error(f"  • {err}")
     logger.info("=" * 60)
@@ -162,25 +118,33 @@ def run_wrapper(config: dict, run_orchestrator_if_no_new: bool = False) -> dict:
     return result
 
 
-def notify_results(
-    result: dict,
-    config: dict,
-    log_file: Optional[Path] = None,
-) -> None:
-    """Envía notificaciones de los resultados"""
+def notify_if_new_links(result: dict, config: dict) -> None:
+    """
+    Envía notificaciones SOLO si hay enlaces nuevos
     
+    Args:
+        result: Resultado del scraper
+        config: Configuración con datos de notificación
+    """
     scraper = result.get("scraper") or {}
-    orchestrator = result.get("orchestrator") or {}
     
-    # Extraer mes (puede venir de scraper u orchestrator)
-    month = scraper.get("month") or orchestrator.get("month")
+    # Extraer mes del scraper
+    month = scraper.get("month")
+    new_links_count = scraper.get("new_links_count", 0)
+    
+    # SOLO notificar si hay enlaces nuevos
+    if new_links_count == 0:
+        logger.info("ℹ No hay enlaces nuevos - sin notificación")
+        return
+    
+    logger.info(f"📢 Hay {new_links_count} enlaces nuevos - enviando notificación")
     
     if result["success"]:
-        title = "✅ Actividades Cívicos Burgos - Ejecución exitosa"
+        title = "🔗 Actividades Cívicos Burgos - Enlaces nuevos detectados"
         status = "success"
     else:
-        title = f"❌ Actividades Cívicos Burgos - Ejecución fallida ({len(result.get('errors', []))} errores)"
-        status = "error"
+        title = f"⚠️ Actividades Cívicos Burgos - Scraper con problemas"
+        status = "warning"
     
     # Preparar config SMTP si todos los campos están presentes
     smtp_config = None
@@ -199,13 +163,13 @@ def notify_results(
         month=month,
         status=status,
         scraped_count=scraper.get("total_links_found", 0),
-        scraped_new=scraper.get("new_links_count", 0),
-        orchestrator_civicos=orchestrator.get("civicos_processed", 0),
-        orchestrator_activities=orchestrator.get("total_activities", 0),
-        orchestrator_errors=orchestrator.get("civicos_with_errors", 0),
+        scraped_new=new_links_count,
+        orchestrator_civicos=0,
+        orchestrator_activities=0,
+        orchestrator_errors=0,
         warnings=[],
         errors=result.get("errors", []),
-        log_file=str(log_file) if log_file else None,
+        log_file=None,
         discord_webhook=config["discord_webhook"],
         smtp_config=smtp_config,
     )
@@ -213,21 +177,16 @@ def notify_results(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Task wrapper para ejecutar scraper + orchestrator"
+        description="Scraper Runner - Ejecuta SOLO scraper y notifica si hay enlaces nuevos"
     )
     parser.add_argument(
         "--config",
         help="Ruta al archivo .env (búsqueda: CWD/.env)",
     )
     parser.add_argument(
-        "--force-orchestrator",
-        action="store_true",
-        help="Ejecuta orchestrator incluso aunque no haya enlaces nuevos",
-    )
-    parser.add_argument(
         "--no-notify",
         action="store_true",
-        help="Desactiva notificaciones (Discord/Email)",
+        help="Desactiva notificaciones (no notifica incluso si hay enlaces nuevos)",
     )
     
     args = parser.parse_args()
@@ -245,11 +204,11 @@ def main():
     setup_logging(level=getattr(logging, config["log_level"]))
     
     # === EJECUCIÓN ===
-    result = run_wrapper(config, run_orchestrator_if_no_new=args.force_orchestrator)
+    result = run_scraper_only(config)
     
-    # === NOTIFICACIÓN ===
+    # === NOTIFICACIÓN (SOLO SI HAY ENLACES NUEVOS) ===
     if not args.no_notify:
-        notify_results(result, config)
+        notify_if_new_links(result, config)
     
     # === SALIDA ===
     exit_code = 0 if result["success"] else 1
