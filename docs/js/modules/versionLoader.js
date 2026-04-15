@@ -8,7 +8,7 @@
  */
 export async function loadVersion() {
   try {
-    const response = await fetch('../../VERSION');
+    const response = await fetch('../VERSION');
     if (!response.ok) {
       throw new Error(`Error loading VERSION file: ${response.status}`);
     }
