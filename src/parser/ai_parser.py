@@ -20,15 +20,20 @@ import json
 import logging
 import requests
 import re
+import os
 from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Cargar variables del .env
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
 # Configuración de Ollama
 OLLAMA_BASE_URL = "http://localhost:11434"
-OLLAMA_MODEL = "mistral"  # Cambiar a "llama2" si prefieres
+OLLAMA_MODEL = os.getenv("AI_MODEL", "mistral")  # Lee del .env, usa "mistral" por defecto
 
 # Prompt que instruye al modelo cómo extraer datos estructurados
 ACTIVITY_EXTRACTION_PROMPT = """Eres un parser JSON de actividades. DEVUELVE SOLO JSON VÁLIDO.
