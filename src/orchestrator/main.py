@@ -60,7 +60,15 @@ def run_orchestrator(
 
     if not links_file.exists():
         logger.warning("No existe links.json para el mes %s", month)
-        return None
+        return {
+            "success": False,
+            "month": month,
+            "civicos_processed": 0,
+            "civicos_with_errors": 0,
+            "total_activities": 0,
+            "errors": [("orchestrator", f"No existe links.json para {month}")],
+            "activities_file": None,
+        }
 
     # Cargar links.json
     links_data = json.loads(links_file.read_text(encoding="utf-8"))
@@ -83,7 +91,15 @@ def run_orchestrator(
     
     if not new_links:
         logger.info("No hay PDFs nuevos que procesar")
-        return all_activities
+        return {
+            "success": True,
+            "month": month,
+            "civicos_processed": 0,
+            "civicos_with_errors": 0,
+            "total_activities": len(all_activities),
+            "errors": [],
+            "activities_file": str(actividades_file),
+        }
 
     logger.info("Procesando %d cívicos nuevos", len(new_links))
 
@@ -215,7 +231,18 @@ def run_orchestrator(
     else:
         logger.info("✓ Todos los cívicos procesados correctamente")
     
-    return all_activities
+    # Calcular total de actividades
+    total_activities = sum(len(activities) for activities in all_activities.values())
+    
+    return {
+        "success": len(errors) == 0,
+        "month": month,
+        "civicos_processed": len([l for l in new_links if not l.get("is_new")]),
+        "civicos_with_errors": len(errors),
+        "total_activities": total_activities,
+        "errors": errors,
+        "activities_file": str(actividades_file),
+    }
 
 def main():
     parser = argparse.ArgumentParser(
@@ -237,6 +264,13 @@ def main():
     month_dir = Path(args.data_path) / args.month
     month_dir.mkdir(parents=True, exist_ok=True)
     setup_logging(log_file=month_dir / "warnings.log")
+
+    result = run_orchestrator(
+        month=args.month,
+        base_data_path=Path(args.data_path),
+    )
+    
+    return result
 
     run_orchestrator(
         month=args.month,

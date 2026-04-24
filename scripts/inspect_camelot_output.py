@@ -137,8 +137,25 @@ def inspect_civico_pdfs(month: str, civico_id: Optional[str] = None):
                 print(f"\n  ⚠️  Probando con flavor='stream'...")
                 tables_stream = camelot.read_pdf(str(pdf_path), pages="all", flavor="stream")
                 print(f"  ✅ Stream: {len(tables_stream)} tablas")
+                # Mostrar análisis de cada tabla
                 for table_idx, table in enumerate(tables_stream):
                     print(f"     └─ Tabla {table_idx + 1}: {table.shape[0]}x{table.shape[1]}")
+                    print(f"        ├─ Dimensiones: {table.shape[0]} filas × {table.shape[1]} columnas")
+                    print(f"        ├─ Confianza (Stream): {table.accuracy:.1%}")
+
+                    # Mostrar primeras filas
+                    print(f"        ├─ Primeras filas:")
+                    df = table.df
+                    for row_idx in range(min(5, len(df))):
+                        print(f"        │  [{row_idx}] {df.iloc[row_idx].tolist()}")
+
+                    if len(df) > 5:
+                        print(f"        │  ... ({len(df) - 5} filas más)")
+
+                    # Verificar columnas detectadas
+                    print(f"        └─ Columnas ({df.shape[1]}):")
+                    for col_idx, col_name in enumerate(df.columns):
+                        print(f"           [{col_idx}] {col_name}")
         
         except Exception as e:
             print(f"❌ Error procesando {pdf_name}: {e}")

@@ -25,6 +25,7 @@ En resumen, **pone a disposición de todos los burgaleses una agenda verdaderame
   - [🤖 2.4 Parser con IA](#-24-parser-con-ia-ollama--mistral)
   - [🧪 2.5 Testing](#-testing)
   - [🌐 3. Web](#-3-web)
+  - [⚙️ Task Wrapper](#️-task-wrapper--ejecución-automática-desde-cron)
   - [🏛️ Datos fijos: centros cívicos](#️-datos-fijos-centros-cívicos)
 
 ---
@@ -313,6 +314,149 @@ La carpeta `web/` contiene una aplicación estática (**HTML + JS**) que:
   - Ver detalle completo de una actividad  
 
 > Este bloque no depende de Python.
+
+---
+
+## ⚙️ Task Wrapper – Ejecución automática desde Cron
+
+Existen dos flujos disponibles para automatizar la ejecución:
+
+### 1️⃣ Full Pipeline: Scraper + Orchestrator
+
+**Ubicación:** `scripts/run_full_pipeline.sh`
+
+Ejecuta secuencialmente:
+1. **Scraper** → detecta el mes y nuevos PDFs
+2. **Orchestrator** → solo si hay PDFs nuevos, procesa ese mes
+3. Envía notificaciones (Discord/Email) con resultados completos
+
+**Uso en cron (ej: 2 AM cada día):**
+```bash
+0 2 * * * /home/kowagunga/workspaces/BurgosEnAbierto/actividades_civicos_burgos/scripts/run_full_pipeline.sh
+```
+
+**Uso manual:**
+```bash
+./scripts/run_full_pipeline.sh
+# o llamar al task_wrapper directamente:
+python3 -m src.task_wrapper --config .env
+python3 -m src.task_wrapper --config .env --force-orchestrator  # Ejecuta incluso sin nuevos PDFs
+python3 -m src.task_wrapper --config .env --no-notify          # Sin notificaciones
+```
+
+### 2️⃣ Scraper Only: Solo detección de enlaces
+
+**Ubicación:** `scripts/run_scraper_only.sh`
+
+Ejecuta SOLO el scraper:
+- Detecta nuevos PDFs
+- Notifica **SOLO si hay enlaces nuevos** (ejecución silenciosa si no hay cambios)
+- No ejecuta el orchestrator
+
+Ideal para:
+- Ejecuciones diarias frecuentes (ej: cada 6 horas)
+- Detección rápida de cambios sin procesar PDFs
+- Notificaciones puntuales solo cuando hay novedades
+
+**Uso en cron (ej: cada 6 horas):**
+```bash
+0 6,12,18 * * * /home/kowagunga/workspaces/BurgosEnAbierto/actividades_civicos_burgos/scripts/run_scraper_only.sh
+```
+
+**Uso manual:**
+```bash
+./scripts/run_scraper_only.sh
+# o llamar al scraper_runner directamente:
+python3 -m src.scraper_runner --config .env
+python3 -m src.scraper_runner --config .env --no-notify  # Sin notificaciones
+```
+
+### Instalación rápida
+
+```bash
+# 1. Instala dependencias (python-dotenv es necesario)
+pip install -r requirements.txt
+
+# 2. Copia y personaliza .env
+cp .env.example .env
+# Edita .env con tus rutas y notificadores
+
+# 3. Hacer scripts ejecutables
+chmod +x scripts/run_*.sh
+```
+
+### Ubicación del .env
+
+El archivo `.env` debe estar en el **workspace root** (un nivel por encima que los scripts):
+
+```
+/home/kowagunga/workspaces/BurgosEnAbierto/actividades_civicos_burgos/
+├── .env                    ← AQUÍ
+├── scripts/
+│   ├── run_full_pipeline.sh
+│   └── run_scraper_only.sh
+├── src/
+├── docs/
+└── ...
+```
+
+Cuando ejecutas los scripts, buscan `.env` en el workspace root (directorio padre de `/scripts`).
+
+### Configuración de notificaciones
+
+**Discord** (recomendado):
+1. Crea un webhook en tu servidor de Discord
+2. Copia la URL en `.env`: `DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...`
+
+**Email SMTP** (opcional):
+```ini
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=tu@gmail.com
+SMTP_PASSWORD=app_password_generada_en_google
+SMTP_FROM=tu@gmail.com
+SMTP_TO=destino@email.com
+```
+
+Para Gmail:
+1. Activa 2-Step Verification
+2. Genera "App Password" en https://myaccount.google.com/apppasswords
+3. Copia valores en `.env`
+
+**Sin notificaciones:**
+Deja los campos vacíos. El wrapper funcionará igual y guardará logs locales en `logs/`.
+
+### Datos devueltos por Scraper y Orchestrator
+
+El task wrapper usa datos estructurados devueltos por cada módulo:
+
+**Scraper:**
+```python
+{
+    "success": bool,
+    "month": "202601",
+    "total_links_found": 12,
+    "new_links_count": 3,
+    "new_links": [...],
+    "links_file": Path,
+    "error": str | None,
+}
+```
+
+**Orchestrator:**
+```python
+{
+    "success": bool,
+    "month": "202601",
+    "civicos_processed": 3,
+    "civicos_with_errors": 0,
+    "total_activities": 145,
+    "errors": [...],
+    "activities_file": Path,
+}
+```
+
+Esto evita parsear logs y garantiza una comunicación limpia entre módulos.
 
 ---
 
