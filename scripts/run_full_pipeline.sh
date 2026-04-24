@@ -25,4 +25,8 @@ fi
 # Ejecutar el wrapper Python (busca .env en WORKSPACE_ROOT)
 python3 -m src.task_wrapper --config .env
 
+# Generar feeds RSS
+echo "🔄 Generando feeds RSS..."
+python3 scripts/generate_rss.py
+
 exit $?
