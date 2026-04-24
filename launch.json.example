@@ -1,0 +1,97 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Run Scraper",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.scraper.main",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Run Gamonal parser (PDF local)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.debug_gamonal_parser",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Inspect camelot output <yyyymm> <civico>",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.inspect_camelot_output",
+      "cwd": "${workspaceFolder}",
+      "args": ["yyyymm", "civico"]
+    },
+    {
+      "name": "Generate RSS feeds",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.generate_rss",
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "name": "Run Orchestrator (yyyymm)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.orchestrator.main",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["yyyymm"],
+    },
+    {
+      "name": "Run Task Wrapper",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.task_wrapper",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["--config", ".env"]
+    },
+    {
+      "name": "Run Task Wrapper (force orchestrator)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.task_wrapper",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["--config", ".env", "--force-orchestrator"]
+    },
+    {
+      "name": "Run Task Wrapper (no notifications)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.task_wrapper",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["--config", ".env", "--no-notify"]
+    },
+    {
+      "name": "Run Scraper Runner",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.scraper_runner",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["--config", ".env"]
+    },
+    {
+      "name": "Run Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-v"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Launch web in localhost",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "http.server",
+      "args": ["8000"],
+      "console": "integratedTerminal"
+    }
+  ]
+}

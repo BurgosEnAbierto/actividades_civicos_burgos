@@ -15,55 +15,96 @@ BASE_URL = "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher
 DATA_DIR = Path("docs/data")
 
 
-def run_scraper() -> dict:
-    html = fetch_page(BASE_URL)
-    links = extract_pdf_links(html)
+def run_scraper(data_dir: Path | None = None) -> dict:
+    """
+    Ejecuta el scraper y devuelve datos estructurados.
+    
+    Returns:
+        {
+            "success": bool,
+            "month": str (YYYYMM) o None,
+            "total_links_found": int,
+            "new_links_count": int,
+            "new_links": list[dict],
+            "links_file": Path,
+            "error": str o None,
+        }
+    """
+    if data_dir is None:
+        data_dir = DATA_DIR
+    
+    try:
+        html = fetch_page(BASE_URL)
+        links = extract_pdf_links(html)
 
-    if not links:
-        raise RuntimeError("No se detectaron enlaces de PDFs")
+        if not links:
+            return {
+                "success": False,
+                "month": None,
+                "total_links_found": 0,
+                "new_links_count": 0,
+                "new_links": [],
+                "links_file": None,
+                "error": "No se detectaron enlaces de PDFs",
+            }
 
-    month = detect_month(links)
-    month_dir = DATA_DIR / month
-    month_dir.mkdir(parents=True, exist_ok=True)
+        month = detect_month(links)
+        month_dir = data_dir / month
+        month_dir.mkdir(parents=True, exist_ok=True)
 
-    links_path = month_dir / "links.json"
+        links_path = month_dir / "links.json"
+        now = datetime.now(timezone.utc).isoformat()
 
-    now = datetime.now(timezone.utc).isoformat()
+        if links_path.exists():
+            old_payload = json.loads(links_path.read_text(encoding="utf-8"))
+            old_links = old_payload.get("links", [])
+            links = mark_new_links(old_links, links)
+        else:
+            # primera vez: todos nuevos
+            for link in links:
+                link["is_new"] = True
 
-    if links_path.exists():
-        old_payload = json.loads(links_path.read_text(encoding="utf-8"))
-        old_links = old_payload.get("links", [])
-        links = mark_new_links(old_links, links)
-    else:
-        # primera vez: todos nuevos
-        for link in links:
-            link["is_new"] = True
+        new_links = [l for l in links if l.get("is_new")]
 
-    payload = {
-        "meta": {
+        payload = {
+            "meta": {
+                "month": month,
+                "scraped_at": now,
+                "source": BASE_URL,
+            },
+            "links": links,
+        }
+
+        links_path.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+        return {
+            "success": True,
             "month": month,
-            "scraped_at": now,
-            "source": BASE_URL,
-        },
-        "links": links,
-    }
-
-    links_path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
-
-    return {
-        "month": month,
-        "links_path": str(links_path),
-        "new_links": [
-            l for l in links if l.get("is_new")
-        ],
-    }
+            "total_links_found": len(links),
+            "new_links_count": len(new_links),
+            "new_links": new_links,
+            "links_file": links_path,
+            "error": None,
+        }
+    
+    except Exception as e:
+        logger.error(f"❌ Error en scraper: {e}")
+        return {
+            "success": False,
+            "month": None,
+            "total_links_found": 0,
+            "new_links_count": 0,
+            "new_links": [],
+            "links_file": None,
+            "error": str(e),
+        }
 
 
 if __name__ == "__main__":
     setup_logging()
 
     result = run_scraper()
-    logger.info("Resultado: %s", result)
+    logger.info(f"Scraper completado: {result['new_links_count']} enlaces nuevos")

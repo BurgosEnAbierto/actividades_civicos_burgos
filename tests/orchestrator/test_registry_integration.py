@@ -54,14 +54,16 @@ class TestOrchestratorStructure:
         schema_path = Path("schemas/actividades.schema.v1.json")
         assert schema_path.exists()
 
-        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        full_schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        # Usar el sub-schema para validar actividades individuales
+        activity_schema = full_schema["$defs"]["actividad"]
         actividades = json.loads(activities_path.read_text(encoding="utf-8"))
 
         errors = []
         for civico_id, activities_list in actividades.items():
             for idx, activity in enumerate(activities_list):
                 try:
-                    validate(instance=activity, schema=schema)
+                    validate(instance=activity, schema=activity_schema)
                 except ValidationError as e:
                     errors.append(f"{civico_id}[{idx}]: {e.message}")
 
