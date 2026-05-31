@@ -1,7 +1,7 @@
 {
   "meta": {
     "month": "202605",
-    "scraped_at": "2026-05-01T04:00:03.007146+00:00",
+    "scraped_at": "2026-05-29T04:00:04.052939+00:00",
     "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
   },
   "links": [
@@ -10,49 +10,49 @@
       "title": "RIO VENA AGENDA MAYO 2026",
       "url": "https://www.aytoburgos.es/documents/38509/0/RIO+VENA+AGENDA+MAYO+26.pdf/b9431779-8d74-2907-c619-30ea1a9974c2?t=1777547515411",
       "filename": "b9431779-8d74-2907-c619-30ea1a9974c2",
-      "is_new": true
+      "is_new": false
     },
     {
       "civico_id": "vista_alegre",
       "title": "VISTA ALEGRE AGENDA MAYO 2026",
       "url": "https://www.aytoburgos.es/documents/38509/0/VISTA+ALEGRE+AGENDA+MAYO+26.pdf/31192c5b-d35f-0486-5bc2-2190a18275a8?t=1777547531645",
       "filename": "31192c5b-d35f-0486-5bc2-2190a18275a8",
-      "is_new": true
+      "is_new": false
     },
     {
       "civico_id": "capiscol",
       "title": "CAPISCOL AGENDA MAYO 2026",
       "url": "https://www.aytoburgos.es/documents/38509/0/CAPISCOL+AGENDA+MAYO+26.pdf/c33d4ec7-6272-7d75-d3f8-906759cd1ec6?t=1777547549755",
       "filename": "c33d4ec7-6272-7d75-d3f8-906759cd1ec6",
-      "is_new": true
+      "is_new": false
     },
     {
       "civico_id": "san_agustin",
       "title": "SAN AGUSTIN AGENDA MAYO 2026",
-      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUST%C3%8DN+AGENDA+MAYO+26.pdf/6f8bc1e4-8524-a283-ed7a-de3309255d57?t=1777547569044",
-      "filename": "6f8bc1e4-8524-a283-ed7a-de3309255d57",
-      "is_new": true
+      "url": "https://www.aytoburgos.es/documents/38509/0/Agenda+MAYO+26+SA.pdf/b960a317-b42f-59db-d1ab-81a38e4ae16c?t=1778226674947",
+      "filename": "b960a317-b42f-59db-d1ab-81a38e4ae16c",
+      "is_new": false
     },
     {
       "civico_id": "huelgas",
       "title": "LAS HUELGAS AGENDA MAYO 2026",
       "url": "https://www.aytoburgos.es/documents/38509/0/HUELGAS+AGENDA+MAYO+26+.pdf/6ffe2aaa-606c-4cc8-cf68-ed94a3886ff8?t=1777547585076",
       "filename": "6ffe2aaa-606c-4cc8-cf68-ed94a3886ff8",
-      "is_new": true
+      "is_new": false
     },
     {
       "civico_id": "san_juan",
       "title": "SAN JUAN AGENDA MAYO 2026",
       "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+MAYO+26.pdf/831f8531-bf20-6342-6331-638e26c23b87?t=1777547603220",
       "filename": "831f8531-bf20-6342-6331-638e26c23b87",
-      "is_new": true
+      "is_new": false
     },
     {
       "civico_id": "gamonal_norte",
       "title": "GAMONAL NORTE AGENDA MAYO 26",
       "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+MAYO+26.pdf/4f6a348c-6376-cc41-fae0-4b0b36acc7b1?t=1777547618886",
       "filename": "4f6a348c-6376-cc41-fae0-4b0b36acc7b1",
-      "is_new": true
+      "is_new": false
     }
   ]
 }

@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "month": "202606",
+    "scraped_at": "2026-05-31T04:00:03.319751+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "rio_vena",
+      "title": "RIO VENA AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/RIO+VENA+AGENDA+JUNIO+26.pdf/52196b2d-7571-e047-a3b8-d2fcdbfbe975?t=1780056854813",
+      "filename": "52196b2d-7571-e047-a3b8-d2fcdbfbe975",
+      "is_new": false
+    },
+    {
+      "civico_id": "vista_alegre",
+      "title": "VISTA ALEGRE AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/VISTA+ALEGRE+AGENDA+JUNIO+26.pdf/7c770717-5365-7457-8ede-696652cd7d5c?t=1780056874549",
+      "filename": "7c770717-5365-7457-8ede-696652cd7d5c",
+      "is_new": false
+    },
+    {
+      "civico_id": "capiscol",
+      "title": "CAPISCOL AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/CAPISCOL+AGENDA++JUNIO+26.pdf/fde8e254-f303-3bca-63c7-611b07b686b8?t=1780056892694",
+      "filename": "fde8e254-f303-3bca-63c7-611b07b686b8",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUST%C3%8DN+AGENDAJUNIO+26++.pdf/52fb2df3-df3a-70b7-8ac3-e947e4cb7acf?t=1780056911558",
+      "filename": "52fb2df3-df3a-70b7-8ac3-e947e4cb7acf",
+      "is_new": false
+    },
+    {
+      "civico_id": "huelgas",
+      "title": "LAS HUELGAS-EL PILAR AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/LAS+HUELGAS+AGENDA+JUNIO+26.pdf/dbd40b82-b8c5-622f-73fd-8d1b835e96fa?t=1780056929274",
+      "filename": "dbd40b82-b8c5-622f-73fd-8d1b835e96fa",
+      "is_new": false
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+JUNIO+26.pdf/0d802983-cf44-5d9a-eaea-9d0b45d76b51?t=1780056964910",
+      "filename": "0d802983-cf44-5d9a-eaea-9d0b45d76b51",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA JUNIO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+JUNIO+26.pdf/0cbd1836-561e-77ad-22d2-05e21ec6f0bc?t=1780057913078",
+      "filename": "0cbd1836-561e-77ad-22d2-05e21ec6f0bc",
+      "is_new": false
+    }
+  ]
+}
