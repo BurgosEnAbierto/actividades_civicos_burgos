@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "month": "202607",
+    "scraped_at": "2026-07-03T04:00:03.311737+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA JULIO-AGOSTO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUST%C3%8DN++AGENDA+JULIO-AGOSTO+26+++.pdf/2e3ac215-82f4-9cc9-859c-22fdc8844add?t=1782814726903",
+      "filename": "2e3ac215-82f4-9cc9-859c-22fdc8844add",
+      "is_new": false
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA JULIO-AGOSTO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+JULIO-AGOSTO+26.pdf/639f084e-f6cf-ec11-eb0c-50e6ad5f1471?t=1782814748561",
+      "filename": "639f084e-f6cf-ec11-eb0c-50e6ad5f1471",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA JULIO-AGOSTO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+JULIO+AGOSTO+26.pdf/6167c19e-c2c4-c0a9-5c80-094076bf638e?t=1782814767780",
+      "filename": "6167c19e-c2c4-c0a9-5c80-094076bf638e",
+      "is_new": false
+    }
+  ]
+}
