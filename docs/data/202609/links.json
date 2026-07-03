@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "month": "202607",
+    "scraped_at": "2026-07-03T04:00:03.311737+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA JULIO-AGOSTO 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+JULIO-AGOSTO+26.pdf/639f084e-f6cf-ec11-eb0c-50e6ad5f1471?t=1782814748561",
+      "filename": "639f084e-f6cf-ec11-eb0c-50e6ad5f1471",
+      "is_new": false
+    }
+  ]
+}

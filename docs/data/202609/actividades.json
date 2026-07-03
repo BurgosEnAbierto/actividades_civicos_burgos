@@ -1,0 +1,18 @@
+{
+  "gamonal_norte": [
+    {
+      "nombre": "Escape room: Tras las huellas del escenario mágico",
+      "descripcion": null,
+      "fecha": "02/09/2026",
+      "fecha_fin": null,
+      "hora": "10:30",
+      "hora_fin": null,
+      "requiere_inscripcion": true,
+      "lugar": "Sala de encuentro",
+      "publico": "infantil",
+      "edad_minima": 9,
+      "edad_maxima": 12,
+      "precio": null
+    }
+  ]
+}
