@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "month": "202610",
+    "scraped_at": "2026-10-07T04:00:03.390169+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "rio_vena",
+      "title": "RIO VENA AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/RIO+VENA+AGENDA+OCTUBRE+26++-.pdf/255808ef-5ef5-cb46-37ca-e7793d0660af?t=1790769909413",
+      "filename": "255808ef-5ef5-cb46-37ca-e7793d0660af",
+      "is_new": false
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/GAMONAL+NORTE+AGENDA+OCTUBRE+2026.pdf/f0da6ce2-133e-3859-27d2-fa732c50402b?t=1790921457996",
+      "filename": "f0da6ce2-133e-3859-27d2-fa732c50402b",
+      "is_new": false
+    },
+    {
+      "civico_id": "huelgas",
+      "title": "HUELGAS-EL PILAR AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/HUELGAS-EL+PILAR+AGENDA+OCTUBRE+26.pdf/1f2b8093-ee11-120f-5fab-44e57bf8d9db?t=1790769947714",
+      "filename": "1f2b8093-ee11-120f-5fab-44e57bf8d9db",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+AGUST%C3%8DN+AGENDA+OCTUBRE+26+.pdf/098e3848-5861-1515-e04a-317b9af99547?t=1790769970944",
+      "filename": "098e3848-5861-1515-e04a-317b9af99547",
+      "is_new": false
+    },
+    {
+      "civico_id": "vista_alegre",
+      "title": "VISTA ALEGRE AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/VISTA+ALEGRE+AGENDA+OCTUBRE+26.pdf/7bc4cb00-2f42-b83c-d9a6-830b5d5962ed?t=1790848626918",
+      "filename": "7bc4cb00-2f42-b83c-d9a6-830b5d5962ed",
+      "is_new": false
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+OCTUBRE+26.pdf/3a0d64de-3dd2-73a5-3059-ea31e3ccc9fa?t=1790770001667",
+      "filename": "3a0d64de-3dd2-73a5-3059-ea31e3ccc9fa",
+      "is_new": false
+    }
+  ]
+}
