@@ -1,7 +1,7 @@
 {
   "meta": {
     "month": "202610",
-    "scraped_at": "2026-10-07T04:00:03.390169+00:00",
+    "scraped_at": "2026-11-06T05:00:03.898592+00:00",
     "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
   },
   "links": [
@@ -45,6 +45,13 @@
       "title": "SAN JUAN AGENDA OCTUBRE 2026",
       "url": "https://www.aytoburgos.es/documents/38509/0/SAN+JUAN+AGENDA+OCTUBRE+26.pdf/3a0d64de-3dd2-73a5-3059-ea31e3ccc9fa?t=1790770001667",
       "filename": "3a0d64de-3dd2-73a5-3059-ea31e3ccc9fa",
+      "is_new": false
+    },
+    {
+      "civico_id": "capiscol",
+      "title": "CAPISCOL AGENDA OCTUBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/AGENDA+OCTUBRE+26+CAPISCOL.pdf/5038fd05-fd51-9aab-23ff-0bacf85c0767?t=1792574215930",
+      "filename": "5038fd05-fd51-9aab-23ff-0bacf85c0767",
       "is_new": false
     }
   ]
