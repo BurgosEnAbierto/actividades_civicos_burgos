@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "month": "202611",
+    "scraped_at": "2026-11-07T05:00:03.426987+00:00",
+    "source": "https://www.aytoburgos.es/es/servicios-y-programas/-/asset_publisher/rCUegBWr9yud/content/agendacivicos"
+  },
+  "links": [
+    {
+      "civico_id": "rio_vena",
+      "title": "RIO VENA AGENDA NOVIEMBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/AGENDA+NOVIEMBRE+26+RIO+VENA.pdf/bfda726a-d9ba-df4b-01fa-f10265f4a446?t=1793955799977",
+      "filename": "bfda726a-d9ba-df4b-01fa-f10265f4a446",
+      "is_new": true
+    },
+    {
+      "civico_id": "gamonal_norte",
+      "title": "GAMONAL NORTE AGENDA NOVIEMBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/AGENDA++NOVIEMBRE+26+GAMONAL+NORTE.pdf/a4667721-a084-6fac-1375-e6754a43e791?t=1793955874993",
+      "filename": "a4667721-a084-6fac-1375-e6754a43e791",
+      "is_new": true
+    },
+    {
+      "civico_id": "huelgas",
+      "title": "HUELGAS-EL PILAR AGENDA NOVIEMBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/AGENDA+NOVIEMBRE+26+HUELGAS.pdf/26df7922-abbc-1378-9abc-e0eca6a2a727?t=1793955976517",
+      "filename": "26df7922-abbc-1378-9abc-e0eca6a2a727",
+      "is_new": true
+    },
+    {
+      "civico_id": "san_agustin",
+      "title": "SAN AGUSTIN AGENDA NOVIEMBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/AGENDA++NOVIEMBRE+26+SAN+AGUSTIN.pdf/4a01583d-b281-0724-1393-2cb82f12b0ae?t=1793956011933",
+      "filename": "4a01583d-b281-0724-1393-2cb82f12b0ae",
+      "is_new": true
+    },
+    {
+      "civico_id": "vista_alegre",
+      "title": "VISTA ALEGRE AGENDA NOVIEMBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/AGENDA+NOVIEMBRE+26+VISTA+ALEGRE.pdf/75c4b91e-bf0a-3936-0640-2cf544623d86?t=1793956086513",
+      "filename": "75c4b91e-bf0a-3936-0640-2cf544623d86",
+      "is_new": true
+    },
+    {
+      "civico_id": "san_juan",
+      "title": "SAN JUAN AGENDA NOVIEMBRE 2026",
+      "url": "https://www.aytoburgos.es/documents/38509/0/Agenda+San+Juan+Noviembre.pdf/cb24f879-d0af-6f58-48b0-8ad46966997e?t=1793963586099",
+      "filename": "cb24f879-d0af-6f58-48b0-8ad46966997e",
+      "is_new": true
+    }
+  ]
+}
